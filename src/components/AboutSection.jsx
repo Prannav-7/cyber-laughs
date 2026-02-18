@@ -74,93 +74,56 @@ const AboutSection = () => {
         <section ref={sectionRef} id="about" className="overflow-hidden">
             {/* Parallax Image Banner */}
             <div
-                className="relative h-[40vh] md:h-[65vh] overflow-hidden"
+                className="relative min-h-[70vh] flex flex-col items-center justify-center overflow-hidden"
             >
                 <img
                     ref={imgRef}
                     src={ABOUT_IMG}
                     alt="Comedy Stage"
                     className="absolute top-0 left-0 w-full h-[140%] object-cover"
-                    style={{ filter: 'brightness(0.4) saturate(0.7)' }}
+                    style={{ filter: 'brightness(0.3) saturate(0.5)' }}
                     loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-bg via-transparent to-bg opacity-90" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                    <div className="section-label mb-5 opacity-70">About Us</div>
-                    <h2 className="font-display leading-none" style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', color: 'var(--t1)' }}>
-                        LIVE COMEDY<br />
-                        <span style={{ color: 'var(--accent)' }}>ENTERTAINMENT</span>
+
+                {/* Reference Layout: Title followed immediately by centered paragraph */}
+                <div className="relative z-10 max-w-5xl mx-auto px-6 text-center flex flex-col items-center">
+                    <div className="section-label mb-8 opacity-60">Company Overview</div>
+                    <h2
+                        className="font-display leading-tight mb-8"
+                        style={{ fontSize: 'clamp(2.5rem, 8vw, 6.5rem)', color: 'var(--t1)', textTransform: 'uppercase', fontWeight: '900' }}
+                    >
+                        LIVE COMEDY ENTERTAINMENT
                     </h2>
+
+                    <p className="text-white text-xs md:text-lg max-w-4xl leading-relaxed font-bold tracking-widest uppercase opacity-90 mb-12">
+                        BESIDES STAGE WE HAVE DONE TELEVISION, MOVIES, YOUTUBE, CORPORATE SHOWS, PRIVATE GATHERINGS, SANGEETS, BACHELOR PARTIES & MUCH MORE. WE HAVE PERFORMED FOR EVERY OCCASION EXCEPT FOR A FUNERAL. LOOKING FORWARD TO THAT AS WELL.
+                    </p>
+
+                    <div className="flex gap-6">
+                        <button className="btn-primary px-10 py-4 text-[10px] uppercase tracking-[0.3em] font-bold">
+                            Learn More
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {/* Content Section */}
+            {/* Stats Block - Now separate and clean */}
             <div className="max-w-7xl mx-auto px-6 lg:px-16 py-20 md:py-32">
-                <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
-
-                    {/* Left: Text */}
-                    <div className="about-text flex-1 text-center lg:text-left">
-                        <div className="about-label section-label mb-8 justify-center lg:justify-start items-center gap-4">
-                            <span className="w-10 h-px bg-accent opacity-40 hidden md:block" />
-                            OUR STORY
-                        </div>
-                        <h3
-                            className="about-heading font-display mb-10"
-                            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.2rem)', color: 'var(--t1)', lineHeight: 1.02 }}
-                        >
-                            BESIDES THE STAGE,<br className="hidden md:block" /> WE'VE DONE IT ALL
-                        </h3>
-                        <div className="space-y-8 about-body text-t2 text-lg md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light opacity-80">
-                            <p>
-                                Television, movies, YouTube, corporate shows, private gatherings, sangeets, bachelor parties and much more. We have performed for every occasion except a funeral — and we're looking forward to that as well.
-                            </p>
-                            <p>
-                                Founded in 2024, Cyber Laughs has grown from a 50-seat underground venue to the city's most talked-about comedy destination. Every show is handcrafted, every performer vetted, every punchline earned.
-                            </p>
-                        </div>
-                        <button className="about-cta btn-primary mt-12 px-12 py-5 text-sm tracking-widest uppercase">
-                            Explore More
-                        </button>
-                    </div>
-
-                    {/* Right: Stats Grid */}
-                    <div className="w-full lg:w-[480px] flex flex-col gap-8 stats-grid">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            {[
-                                { n: 200, suffix: '+', l: 'Shows Performed' },
-                                { n: 50, suffix: 'K+', l: 'Tickets Sold' },
-                                { n: 12, suffix: '+', l: 'Cities Covered' },
-                                { n: 98, suffix: '%', l: 'Fan Rating' },
-                            ].map(s => (
-                                <div key={s.l} className="stat-card bg-surface/30 backdrop-blur-md border border-white/5 p-8 md:p-10 rounded-sm hover:border-accent/20 transition-all duration-500">
-                                    <div
-                                        className="counter-num font-display text-5xl md:text-6xl mb-3"
-                                        style={{ color: 'var(--accent)' }}
-                                        data-target={s.n}
-                                        data-suffix={s.suffix}
-                                    >
-                                        0{s.suffix}
-                                    </div>
-                                    <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase opacity-40">{s.l}</div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Sub-image */}
-                        <div className="relative rounded-sm overflow-hidden h-56 md:h-72 group shadow-2xl">
-                            <img
-                                src={PERFORM_IMG}
-                                alt="Performer"
-                                className="w-full h-full object-cover grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-bg to-transparent opacity-90" />
-                            <div className="absolute bottom-8 left-8">
-                                <div className="font-mono text-[10px] tracking-[0.3em] uppercase py-2 px-4 border border-accent/20 text-accent bg-accent/5 backdrop-blur-sm">
-                                    Live Atmosphere
-                                </div>
+                <div className="stats-grid grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+                    {[
+                        { label: 'Performances', target: 2500, suffix: '+' },
+                        { label: 'Happy Guests', target: 120, suffix: 'K' },
+                        { label: 'City Tours', target: 45, suffix: '' },
+                        { label: 'Awards Won', target: 12, suffix: '' },
+                    ].map((s, i) => (
+                        <div key={i} className="stat-card p-10 flex flex-col items-center text-center justify-center border border-white/5 bg-white/[0.01]">
+                            <div className="font-display text-4xl md:text-6xl mb-3 text-accent transition-transform duration-500 hover:scale-110">
+                                <span className="counter-num" data-target={s.target} data-suffix={s.suffix}>0</span>
                             </div>
+                            <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase opacity-30">{s.label}</div>
                         </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </section>

@@ -32,23 +32,23 @@ const CTASection = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="divider mb-24" />
 
-                <div className="cta-content flex flex-col lg:flex-row items-start lg:items-end justify-between gap-14">
-                    {/* Left */}
-                    <div className="flex-1">
-                        <div className="section-label mb-5">Stay in the loop</div>
-                        <h2 className="font-display leading-none mb-5" style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)', color: 'var(--t1)' }}>
+                <div className="cta-content flex flex-col items-center text-center">
+                    {/* Content */}
+                    <div className="max-w-3xl mb-16">
+                        <div className="section-label mb-8 justify-center">Join The Underground</div>
+                        <h2 className="font-display leading-none mb-8" style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)', color: 'var(--t1)' }}>
                             NEVER MISS<br />
                             <span style={{ color: 'var(--accent)' }}>A PUNCHLINE</span>
                         </h2>
-                        <p className="text-sm max-w-sm leading-relaxed" style={{ color: 'var(--t2)' }}>
-                            Early access to tickets, exclusive announcements, and secret shows. No spam — just comedy gold.
+                        <p className="text-base md:text-xl leading-relaxed opacity-70 italic max-w-2xl mx-auto">
+                            "Early access to tickets, exclusive announcements, and secret shows. No spam — just comedy gold delivered straight to your inbox."
                         </p>
                     </div>
 
-                    {/* Right: Form */}
-                    <div className="w-full lg:w-auto lg:min-w-[400px]">
+                    {/* Form */}
+                    <div className="w-full max-w-lg">
                         {!submitted ? (
-                            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 p-2 bg-white/[0.03] border border-white/5 backdrop-blur-sm">
                                 <input
                                     id="newsletter-email"
                                     type="email"
@@ -56,26 +56,25 @@ const CTASection = () => {
                                     onChange={e => setEmail(e.target.value)}
                                     placeholder="your@email.com"
                                     required
-                                    className="input-field"
+                                    className="input-field bg-transparent border-none px-6 py-4 flex-1 focus:ring-0"
                                 />
-                                <button id="newsletter-submit" type="submit" className="btn-primary flex-shrink-0">
+                                <button id="newsletter-submit" type="submit" className="btn-primary px-10 py-4 text-xs uppercase tracking-widest">
                                     Subscribe
                                 </button>
                             </form>
                         ) : (
-                            <div className="flex items-center gap-4 p-5 rounded"
-                                style={{ background: 'rgba(232,184,75,0.08)', border: '1px solid rgba(232,184,75,0.2)' }}>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8b84b" strokeWidth="2.5">
-                                    <path d="M20 6L9 17l-5-5" />
-                                </svg>
-                                <div>
-                                    <div className="text-sm font-medium" style={{ color: 'var(--t1)' }}>You're in!</div>
-                                    <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>Check your inbox for confirmation.</div>
+                            <div className="flex flex-col items-center gap-4 p-10 rounded-sm bg-accent/5 border border-accent/20">
+                                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-2">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="3">
+                                        <path d="M20 6L9 17l-5-5" />
+                                    </svg>
                                 </div>
+                                <div className="text-xl font-display uppercase tracking-widest" style={{ color: 'var(--t1)' }}>Welcome To The Club</div>
+                                <div className="font-mono text-xs opacity-50">Check your inbox for your first secret show invite.</div>
                             </div>
                         )}
-                        <p className="font-mono text-xs mt-3" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
-                            Unsubscribe anytime. No spam, ever.
+                        <p className="font-mono text-[10px] md:text-xs mt-6 opacity-30 tracking-[0.2em] uppercase">
+                            * Unsubscribe anytime • No spam ever *
                         </p>
                     </div>
                 </div>

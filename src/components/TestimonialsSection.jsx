@@ -88,50 +88,51 @@ const TestimonialsSection = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16 md:py-24">
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16 md:py-24 text-center">
                 {/* Rating summary */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 md:mb-20 text-center md:text-left">
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                        <div className="font-display text-7xl md:text-8xl" style={{ color: 'var(--accent)' }}>4.9</div>
-                        <div className="flex flex-col items-center md:items-start">
-                            <div className="flex gap-1.5 mb-2">
+                <div className="flex flex-col items-center gap-8 mb-16 md:mb-24">
+                    <div className="section-label mb-2">Honest Reactions</div>
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="font-display text-8xl md:text-9xl leading-none" style={{ color: 'var(--accent)' }}>4.9</div>
+                        <div className="flex flex-col items-center">
+                            <div className="flex gap-2 mb-3">
                                 {[...Array(5)].map((_, i) => (
-                                    <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill="#e8b84b">
+                                    <svg key={i} width="20" height="20" viewBox="0 0 24 24" fill="#e8b84b">
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
                                 ))}
                             </div>
-                            <div className="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase opacity-50">from 1,200+ verified reviews</div>
+                            <div className="font-mono text-[10px] md:text-sm tracking-[0.3em] uppercase opacity-40">1,200+ Verified Audience Reviews</div>
                         </div>
                     </div>
-                    <p className="text-sm md:text-base max-w-sm leading-relaxed opacity-70 mx-auto md:mx-0">
-                        Real words from real audience members. No filters, no PR spin — just honest reactions.
+                    <p className="text-base md:text-xl max-w-2xl leading-relaxed opacity-70 italic">
+                        "Real words from real audience members. No filters, no PR spin — just honest reactions from the front lines of underground comedy."
                     </p>
                 </div>
 
-                <div className="divider mb-16 md:mb-20 opacity-10" />
+                <div className="w-16 h-px bg-white/10 mx-auto mb-16 md:mb-24" />
 
-                <div className="testimonials-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div className="testimonials-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                     {testimonials.map((t, i) => (
-                        <div key={i} className="testimonial-card p-6 md:p-8 border border-white/5 hover:border-accent/20 transition-all duration-300">
-                            <div className="flex gap-1 mb-5">
+                        <div key={i} className="testimonial-card p-8 border border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+                            <div className="flex gap-1.5 mb-6">
                                 {[...Array(t.rating)].map((_, si) => (
                                     <svg key={si} width="14" height="14" viewBox="0 0 24 24" fill="#e8b84b">
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
                                 ))}
                             </div>
-                            <p className="text-sm md:text-base leading-relaxed mb-8 opacity-90 italic">"{t.quote}"</p>
-                            <div className="flex items-center gap-4 mt-auto">
+                            <p className="text-base md:text-lg leading-relaxed mb-10 opacity-80 italic italic">"{t.quote}"</p>
+                            <div className="flex flex-col items-center gap-4 mt-auto">
                                 <img
                                     src={t.img}
                                     alt={t.author}
-                                    className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-accent/20"
+                                    className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border border-accent/20 grayscale hover:grayscale-0 transition-all duration-500"
                                     loading="lazy"
                                 />
                                 <div>
-                                    <div className="text-sm md:text-base font-medium" style={{ color: 'var(--t1)' }}>{t.author}</div>
-                                    <div className="font-mono text-[10px] md:text-xs tracking-wider opacity-50">{t.role}</div>
+                                    <div className="text-sm md:text-base font-medium tracking-wide" style={{ color: 'var(--t1)' }}>{t.author}</div>
+                                    <div className="font-mono text-[10px] md:text-xs tracking-widest opacity-40 uppercase mt-1">{t.role}</div>
                                 </div>
                             </div>
                         </div>

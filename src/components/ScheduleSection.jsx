@@ -82,61 +82,58 @@ const ScheduleSection = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-12 md:py-20">
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+            <div className="max-w-5xl mx-auto px-6 lg:px-16 py-16 md:py-28">
+                <div className="flex flex-col items-center gap-12 md:gap-24">
 
-                    {/* Left - Venue Info */}
-                    <div className="sched-left lg:w-72 flex-shrink-0 text-center lg:text-left">
-                        <div className="section-label mb-5 justify-center lg:justify-start">Venue</div>
-                        <h3 className="font-display text-4xl mb-2" style={{ color: 'var(--t1)' }}>The Neon Bunker</h3>
-                        <p className="font-mono text-xs mb-8" style={{ color: 'var(--t3)' }}>
-                            42 Underground Ave, Cyber District
+                    {/* Venue Info - Centered */}
+                    <div className="sched-left text-center max-w-2xl px-4">
+                        <div className="section-label mb-6 justify-center">Venue Details</div>
+                        <h3 className="font-display text-4xl md:text-6xl mb-3" style={{ color: 'var(--t1)' }}>The Neon Bunker</h3>
+                        <p className="font-mono text-[10px] md:text-sm mb-10 tracking-[0.3em] opacity-40" style={{ color: 'var(--t3)' }}>
+                            42 UNDERGROUND AVE, CYBER DISTRICT
                         </p>
 
-                        <div className="divider mb-8" />
-
-                        <div className="space-y-4 max-w-sm mx-auto lg:mx-0">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
                             {[
-                                ['Doors open', '1 hr before show'],
-                                ['Age policy', '18+ after 9 PM'],
-                                ['Parking', 'Street + Garage'],
-                                ['Dress code', 'Smart casual'],
+                                ['Doors', '1 hr before'],
+                                ['Age', '18+ Policy'],
+                                ['Parking', 'On-Site'],
+                                ['Dress', 'Casual'],
                             ].map(([k, v]) => (
-                                <div key={k} className="flex justify-between items-center text-xs">
-                                    <span className="font-mono uppercase tracking-widest" style={{ color: 'var(--t3)' }}>{k}</span>
-                                    <span className="font-mono" style={{ color: 'var(--t2)' }}>{v}</span>
+                                <div key={k} className="flex flex-col items-center p-4 md:p-6 border border-white/5 bg-white/[0.02]">
+                                    <span className="font-mono text-[8px] md:text-[9px] uppercase tracking-[0.2em] mb-1 opacity-40">{k}</span>
+                                    <span className="font-mono text-[10px] md:text-xs" style={{ color: 'var(--accent)' }}>{v}</span>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="divider my-8" />
-                        <button className="btn-primary w-full justify-center">Reserve a Table</button>
+                        <button className="btn-primary px-12 py-4 text-xs uppercase tracking-[0.2em]">Reserve a Table</button>
                     </div>
 
+                    <div className="w-16 h-px bg-white/10" />
+
                     {/* Right: Rows */}
-                    <div className="sched-rows flex-1 w-full">
+                    <div className="sched-rows w-full max-w-4xl px-4">
                         {shows.map((s) => (
-                            <div key={s.day} className="schedule-row group border-b border-white/5 py-6">
-                                <div className="s-day font-display text-3xl w-16 flex-shrink-0 transition-colors duration-200" style={{ color: 'var(--t3)' }}>
+                            <div key={s.day} className="schedule-row group border-b border-white/5 py-6 md:py-8 flex items-center gap-4">
+                                <div className="s-day font-display text-2xl md:text-5xl w-14 md:w-24 flex-shrink-0 opacity-40 transition-colors duration-300 group-hover:opacity-100 group-hover:text-accent">
                                     {s.day}
                                 </div>
-                                <div className="flex-1 px-4 md:px-6">
-                                    <div className="font-medium text-sm md:text-base" style={{ color: 'var(--t1)' }}>{s.label}</div>
-                                    <div className="font-mono text-[10px] md:text-xs mt-0.8" style={{ color: 'var(--t3)' }}>{s.time}</div>
+                                <div className="flex-1 px-2 md:px-10">
+                                    <div className="font-medium text-sm md:text-xl mb-1" style={{ color: 'var(--t1)' }}>{s.label}</div>
+                                    <div className="font-mono text-[9px] md:text-xs opacity-50 uppercase tracking-widest" style={{ color: 'var(--t3)' }}>{s.time}</div>
                                 </div>
-                                <div className="flex items-center gap-4">
-                                    <span className="font-display text-xl md:text-2xl" style={{ color: 'var(--accent)' }}>{s.price}</span>
+                                <div className="flex items-center gap-4 md:gap-8">
+                                    <span className="font-display text-xl md:text-3xl" style={{ color: 'var(--accent)' }}>{s.price}</span>
                                     <button
-                                        className="btn-outline opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden md:block"
-                                        style={{ padding: '6px 14px', fontSize: '0.62rem' }}
+                                        className="btn-outline opacity-0 group-hover:opacity-100 transition-all duration-300 hidden md:block px-6 py-2 text-[10px] uppercase tracking-widest"
                                     >
                                         Book
                                     </button>
                                     <button
-                                        className="btn-primary md:hidden"
-                                        style={{ padding: '6px 12px', fontSize: '0.6rem' }}
+                                        className="btn-primary md:hidden px-4 py-2 text-[9px] uppercase"
                                     >
-                                        Ticket
+                                        Tix
                                     </button>
                                 </div>
                             </div>

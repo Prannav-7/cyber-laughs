@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import MicrophoneScene from './MicrophoneScene';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -92,11 +91,6 @@ const HeroSection = () => {
                     { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
                     '-=0.3'
                 )
-                .fromTo('.hero-mic-wrap',
-                    { opacity: 0, scale: 0.9 },
-                    { opacity: 1, scale: 1, duration: 1.1, ease: 'power3.out' },
-                    0.5
-                );
 
             // Kinetic scroll: title words expand + fade
             const words = titleRef.current?.querySelectorAll('.hero-title-word');
@@ -153,59 +147,51 @@ const HeroSection = () => {
             </div>
 
             {/* ── Content ── */}
-            <div className="relative z-10 w-full max-w-5xl mx-auto px-6 lg:px-16 pt-32 pb-24 flex flex-col items-center justify-center min-h-[90vh]">
+            <div className="relative z-10 w-full max-w-5xl mx-auto px-6 lg:px-16 pt-20 pb-12 flex flex-col items-center justify-center min-h-[85vh]">
 
                 {/* Center Content */}
                 <div className="w-full flex flex-col items-center text-center z-20">
-                    {/* Badge */}
-                    <div className="hero-badge inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-sm"
-                        style={{ background: 'rgba(232,184,75,0.12)', border: '1px solid rgba(232,184,75,0.3)' }}>
-                        <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                        <span className="font-mono text-accent text-xs md:text-sm tracking-[0.3em] uppercase">
-                            Live Every Fri & Sat
-                        </span>
+
+                    {/* Specialized Badge - More Compact */}
+                    <div className="mb-10 p-6 md:p-10 bg-[#1a1712]/85 backdrop-blur-md border border-white/5 rounded-sm max-w-lg">
+                        <div className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/40 mb-2">At Cyber Laughs</div>
+                        <h2 className="font-display text-xl md:text-3xl leading-tight" style={{ color: 'var(--accent)' }}>
+                            We specialize in <span className="text-white">Insanity!</span>
+                        </h2>
                     </div>
 
-                    {/* Title */}
+                    <div className="hero-btns flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
+                        <button id="hero-domestic" className="btn-primary px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold" onClick={scrollToLineup}>
+                            Domestic Shows
+                        </button>
+                        <button id="hero-intl" className="btn-primary px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold bg-[#e8b84b] hover:bg-[#d4a33a]" onClick={scrollToLineup}>
+                            International Shows
+                        </button>
+                    </div>
+
+                    {/* Bold Title - Reference Style */}
                     <h1
                         ref={titleRef}
-                        className="font-display leading-[0.82] mb-8"
-                        style={{ perspective: '1200px' }}
+                        className="font-display leading-none mb-6"
+                        style={{ color: 'var(--t1)', fontSize: 'clamp(2.5rem, 8vw, 6.2rem)', textTransform: 'uppercase' }}
                     >
-                        <div className="overflow-hidden py-1">
-                            <span className="hero-title-word inline-block" style={{ color: 'var(--t1)', fontSize: 'clamp(3.5rem, 15vw, 10rem)' }}>LAUGHTER</span>
-                        </div>
-                        <div className="overflow-hidden py-1">
-                            <span className="hero-title-word inline-block" style={{ color: 'var(--accent)', fontSize: 'clamp(3.5rem, 15vw, 10rem)' }}>IS OUR</span>
-                        </div>
-                        <div className="overflow-hidden py-1">
-                            <span className="hero-title-word inline-block" style={{ color: 'var(--t1)', fontSize: 'clamp(3.5rem, 15vw, 10rem)' }}>BUSINESS</span>
-                        </div>
+                        Live Comedy Entertainment
                     </h1>
 
-                    <p className="hero-tagline text-t2 text-base md:text-xl max-w-2xl mb-12 leading-relaxed font-light">
-                        The city's most electric underground comedy club. Live shows, legendary lineups, and punchlines that land every single week.
+                    <p className="hero-tagline text-t2 text-[10px] md:text-base max-w-4xl leading-relaxed font-bold tracking-widest uppercase opacity-70 mb-12">
+                        "BESIDES STAGE WE HAVE DONE TELEVISION, MOVIES, YOUTUBE, CORPORATE SHOWS, PRIVATE GATHERINGS, SANGEETS, BACHELOR PARTIES & MUCH MORE."
                     </p>
 
-                    <div className="hero-btns flex flex-wrap justify-center gap-4 mb-16">
-                        <button id="hero-domestic" className="btn-primary px-10 py-4 text-sm uppercase tracking-widest" onClick={scrollToLineup}>
-                            View Lineup
-                        </button>
-                        <button id="hero-intl" className="btn-outline px-10 py-4 text-sm uppercase tracking-widest" onClick={scrollToLineup}>
-                            Book Tickets
-                        </button>
-                    </div>
-
                     {/* Stats */}
-                    <div className="hero-stats flex flex-wrap justify-center gap-x-12 gap-y-6">
+                    <div className="hero-stats flex flex-wrap justify-center gap-x-20 gap-y-8 border-t border-white/5 pt-12">
                         {[
-                            { n: '200+', l: 'Shows' },
-                            { n: '50K+', l: 'Tickets Sold' },
-                            { n: '4.9★', l: 'Avg Rating' },
+                            { n: '250+', l: 'Shows A Year' },
+                            { n: '120K+', l: 'Happy Guests' },
+                            { n: '4.9★', l: 'Global Rating' },
                         ].map(s => (
-                            <div key={s.l} className="flex flex-col items-center">
-                                <div className="font-display text-3xl md:text-4xl" style={{ color: 'var(--accent)' }}>{s.n}</div>
-                                <div className="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase mt-1 opacity-60">{s.l}</div>
+                            <div key={s.l} className="flex flex-col items-center group">
+                                <div className="font-display text-4xl md:text-5xl transition-all duration-500 group-hover:text-white" style={{ color: 'var(--accent)' }}>{s.n}</div>
+                                <div className="font-mono text-[9px] md:text-xs tracking-[0.3em] uppercase mt-2 opacity-30 group-hover:opacity-60 transition-opacity">{s.l}</div>
                             </div>
                         ))}
                     </div>

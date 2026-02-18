@@ -1,6 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ALEX_IMG from '../assets/images/Alex Volt.jpg';
+import MAYA_IMG from '../assets/images/Maya Glitch.png';
+import ZOE_IMG from '../assets/images/Zoe Static.jpg';
+import DANTE_IMG from '../assets/images/Dante Flux.jpg';
+import LUNA_IMG from '../assets/images/Luna Byte.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,7 +17,7 @@ const comedians = [
         date: 'Fri, Mar 7',
         time: '8:00 PM',
         price: '$35',
-        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format&fit=crop&crop=face',
+        img: ALEX_IMG,
         bio: 'Turns everyday absurdity into electric punchlines. 12 consecutive sold-out shows.',
     },
     {
@@ -22,47 +27,37 @@ const comedians = [
         date: 'Sat, Mar 8',
         time: '9:30 PM',
         price: '$40',
-        img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80&auto=format&fit=crop&crop=face',
+        img: MAYA_IMG,
         bio: 'Former software engineer. Her bits about AI are dangerously accurate.',
     },
     {
         id: 3,
-        name: 'Rico Neon',
-        specialty: 'Street Philosophy',
-        date: 'Fri, Mar 14',
-        time: '8:00 PM',
-        price: '$35',
-        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&auto=format&fit=crop&crop=face',
-        bio: 'Sees the city as one giant punchline. Urban observations that make you think.',
-    },
-    {
-        id: 4,
         name: 'Zoe Static',
         specialty: 'Dark Absurdism',
         date: 'Sat, Mar 15',
         time: '10:00 PM',
         price: '$40',
-        img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80&auto=format&fit=crop&crop=face',
+        img: ZOE_IMG,
         bio: 'Exists in a dimension where logic is optional. Sets you\'ll quote for weeks.',
     },
     {
-        id: 5,
+        id: 4,
         name: 'Dante Flux',
         specialty: 'Political Surrealism',
         date: 'Fri, Mar 21',
         time: '8:30 PM',
         price: '$45',
-        img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80&auto=format&fit=crop&crop=face',
+        img: DANTE_IMG,
         bio: 'Weaponizes absurdity against the powerful. Politically charged, hilariously unhinged.',
     },
     {
-        id: 6,
+        id: 5,
         name: 'Luna Byte',
         specialty: 'Cosmic Weirdness',
         date: 'Sat, Mar 22',
         time: '9:00 PM',
         price: '$40',
-        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80&auto=format&fit=crop&crop=face',
+        img: LUNA_IMG,
         bio: 'Comedy spanning galaxies. From quantum physics to relationship drama.',
     },
 ];
@@ -192,28 +187,36 @@ const LineupSection = () => {
 
             <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16 md:py-24">
                 {/* Header */}
-                <div className="lineup-header flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 md:mb-16 text-center md:text-left">
-                    <h2 className="font-display leading-none" style={{ fontSize: 'clamp(3rem, 10vw, 6.5rem)', color: 'var(--t1)' }}>
+                <div className="lineup-header flex flex-col items-center text-center gap-6 mb-16 md:mb-28 px-4">
+                    <div className="section-label mb-2">Our Entertainers</div>
+                    <h2 className="font-display leading-tight" style={{ fontSize: 'clamp(2.5rem, 9vw, 6.8rem)', color: 'var(--t1)' }}>
                         THE LINEUP
                     </h2>
-                    <p className="text-sm md:text-base max-w-sm md:max-w-xs leading-relaxed opacity-70 mx-auto md:mx-0">
-                        Six nights of handpicked comedy. Each performer vetted for maximum impact.
+                    <p className="text-sm md:text-lg max-w-xl leading-relaxed opacity-60 italic mb-4">
+                        "Six nights of handpicked comedy. Each performer vetted for maximum impact and unfiltered energy."
                     </p>
+                    <div className="w-12 h-px bg-accent/40" />
                 </div>
 
-                <div className="divider mb-12 md:mb-16 opacity-10" />
-
                 {/* Grid */}
-                <div className="lineup-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8">
-                    {comedians.map((c, i) => <ComedianCard key={c.id} comedian={c} index={i} />)}
+                <div className="lineup-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-6xl mx-auto">
+                    {comedians.map((c, i) => (
+                        <div key={c.id} className="flex justify-center w-full">
+                            <div className="w-full max-w-[360px] group transition-transform duration-500 hover:-translate-y-2">
+                                <ComedianCard comedian={c} index={i} />
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Footer */}
-                <div className="mt-16 md:mt-20 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-white/5 pt-10">
-                    <p className="font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase opacity-50">
-                        More shows announced weekly
+                <div className="mt-16 md:mt-24 flex flex-col items-center text-center gap-8 border-t border-white/5 pt-12">
+                    <p className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase opacity-40">
+                        * MORE SHOWS ANNOUNCED WEEKLY *
                     </p>
-                    <button id="lineup-notify" className="btn-outline px-8 py-3 text-xs">Stay Updated</button>
+                    <button id="lineup-notify" className="btn-outline px-12 py-4 text-xs uppercase tracking-widest">
+                        Stay Updated
+                    </button>
                 </div>
             </div>
         </section>
