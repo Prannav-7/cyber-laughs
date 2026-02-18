@@ -4,8 +4,12 @@ const Footer = () => (
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
                 {/* Brand */}
                 <div>
-                    <div className="font-display text-2xl text-accent tracking-widest mb-1">CYBER LAUGHS</div>
-                    <div className="text-t3 font-mono text-xs tracking-widest">Underground Comedy Club — Est. 2024</div>
+                    <div className="font-display text-2xl tracking-widest mb-1" style={{ color: 'var(--accent)', letterSpacing: '0.1em' }}>
+                        CYBER LAUGHS
+                    </div>
+                    <div className="font-mono text-xs tracking-widest" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
+                        Underground Comedy Club — Est. 2024
+                    </div>
                 </div>
 
                 {/* Links */}
@@ -16,15 +20,15 @@ const Footer = () => (
                 </div>
 
                 {/* Address */}
-                <div className="text-t3 font-mono text-xs leading-relaxed">
+                <div className="font-mono text-xs leading-relaxed" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
                     <div>42 Underground Ave, Cyber District</div>
-                    <div className="text-accent mt-1">info@cyberlaughs.com</div>
+                    <div className="mt-1" style={{ color: 'var(--accent)' }}>info@cyberlaughs.com</div>
                 </div>
             </div>
 
             <div className="divider my-8" />
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-t3 font-mono text-xs">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
                 <span>© 2025 Cyber Laughs. All rights reserved.</span>
                 <span>Built with care and dark humor.</span>
             </div>

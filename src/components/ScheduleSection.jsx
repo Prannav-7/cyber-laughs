@@ -4,8 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Real venue/stage Unsplash image
-const VENUE_IMG = 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80&auto=format&fit=crop';
+const VENUE_IMG = 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1600&q=85&auto=format&fit=crop';
 
 const shows = [
     { day: 'MON', label: 'Open Mic Night', time: '7:00 PM', price: 'Free' },
@@ -18,99 +17,118 @@ const shows = [
 
 const ScheduleSection = () => {
     const sectionRef = useRef(null);
+    const bannerRef = useRef(null);
+    const bannerImgRef = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.fromTo('.schedule-left',
-                { opacity: 0, x: -40 },
+            // Parallax on banner
+            gsap.to(bannerImgRef.current, {
+                yPercent: 22,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: bannerRef.current,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1.5,
+                },
+            });
+
+            // Left panel
+            gsap.fromTo('.sched-left > *',
+                { opacity: 0, x: -30 },
                 {
-                    opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-                    scrollTrigger: { trigger: '.schedule-left', start: 'top 82%' },
+                    opacity: 1, x: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out',
+                    scrollTrigger: { trigger: '.sched-left', start: 'top 80%' },
                 }
             );
+
+            // Rows
             gsap.fromTo('.schedule-row',
-                { opacity: 0, x: 30 },
+                { opacity: 0, x: 24 },
                 {
                     opacity: 1, x: 0,
                     duration: 0.6,
                     stagger: 0.07,
                     ease: 'power3.out',
-                    scrollTrigger: { trigger: '.schedule-rows', start: 'top 82%' },
+                    scrollTrigger: { trigger: '.sched-rows', start: 'top 80%' },
                 }
             );
         }, sectionRef);
+
         return () => ctx.revert();
     }, []);
 
     return (
-        <section ref={sectionRef} id="schedule" className="py-28 overflow-hidden">
-            {/* Full-width venue image strip */}
-            <div className="relative h-56 mb-24 overflow-hidden">
+        <section ref={sectionRef} id="schedule">
+            {/* Parallax banner */}
+            <div ref={bannerRef} className="relative h-52 overflow-hidden">
                 <img
+                    ref={bannerImgRef}
                     src={VENUE_IMG}
                     alt="Comedy venue"
-                    className="w-full h-full object-cover"
-                    style={{ filter: 'brightness(0.22) saturate(0.3)' }}
+                    className="parallax-img"
+                    style={{ filter: 'brightness(0.2) saturate(0.4)' }}
                     loading="lazy"
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, var(--bg) 0%, transparent 30%, transparent 70%, var(--bg) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,11,8,1) 0%, transparent 25%, transparent 75%, rgba(13,11,8,1) 100%)' }} />
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                         <div className="section-label justify-center mb-3">Every Week</div>
-                        <h2 className="font-display text-accent" style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', lineHeight: 1 }}>
+                        <h2 className="font-display" style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)', color: 'var(--accent)', lineHeight: 1 }}>
                             WEEKLY SHOWS
                         </h2>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16">
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-20">
                 <div className="flex flex-col lg:flex-row gap-20">
 
                     {/* Left */}
-                    <div className="schedule-left lg:w-80 flex-shrink-0">
+                    <div className="sched-left lg:w-72 flex-shrink-0">
                         <div className="section-label mb-5">Venue</div>
-                        <h3 className="font-display text-3xl text-t1 mb-1">The Neon Bunker</h3>
-                        <p className="text-t3 font-mono text-xs mb-6">42 Underground Ave, Cyber District</p>
+                        <h3 className="font-display text-3xl mb-1" style={{ color: 'var(--t1)' }}>The Neon Bunker</h3>
+                        <p className="font-mono text-xs mb-6" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
+                            42 Underground Ave, Cyber District
+                        </p>
 
                         <div className="divider mb-6" />
 
-                        <div className="space-y-4 text-sm">
-                            <div className="flex justify-between">
-                                <span className="text-t3 font-mono text-xs uppercase tracking-widest">Doors open</span>
-                                <span className="text-t2 font-mono text-xs">1 hr before show</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-t3 font-mono text-xs uppercase tracking-widest">Age</span>
-                                <span className="text-t2 font-mono text-xs">18+ after 9 PM</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-t3 font-mono text-xs uppercase tracking-widest">Parking</span>
-                                <span className="text-t2 font-mono text-xs">Street + Garage</span>
-                            </div>
+                        <div className="space-y-4">
+                            {[
+                                ['Doors open', '1 hr before show'],
+                                ['Age policy', '18+ after 9 PM'],
+                                ['Parking', 'Street + Garage'],
+                                ['Dress code', 'Smart casual'],
+                            ].map(([k, v]) => (
+                                <div key={k} className="flex justify-between items-center">
+                                    <span className="font-mono text-xs uppercase tracking-widest" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{k}</span>
+                                    <span className="font-mono text-xs" style={{ color: 'var(--t2)', fontFamily: 'DM Mono, monospace' }}>{v}</span>
+                                </div>
+                            ))}
                         </div>
 
                         <div className="divider my-6" />
-
-                        <button className="btn-accent w-full justify-center">Reserve a Table</button>
+                        <button className="btn-primary w-full justify-center">Reserve a Table</button>
                     </div>
 
-                    {/* Right: Schedule rows */}
-                    <div className="schedule-rows flex-1">
-                        {shows.map((s, i) => (
+                    {/* Right: Rows */}
+                    <div className="sched-rows flex-1">
+                        {shows.map((s) => (
                             <div key={s.day} className="schedule-row group">
-                                <div className="schedule-day font-display text-2xl w-16 text-t3 transition-colors duration-200 flex-shrink-0">
+                                <div className="s-day font-display text-2xl w-16 flex-shrink-0 transition-colors duration-200" style={{ color: 'var(--t3)' }}>
                                     {s.day}
                                 </div>
                                 <div className="flex-1 px-6">
-                                    <div className="text-t1 font-medium text-sm">{s.label}</div>
-                                    <div className="text-t3 font-mono text-xs mt-0.5">{s.time}</div>
+                                    <div className="font-medium text-sm" style={{ color: 'var(--t1)' }}>{s.label}</div>
+                                    <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{s.time}</div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <span className="font-display text-xl text-accent">{s.price}</span>
+                                    <span className="font-display text-xl" style={{ color: 'var(--accent)' }}>{s.price}</span>
                                     <button
-                                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 btn-ghost py-1.5 px-3"
-                                        style={{ fontSize: '0.65rem', padding: '6px 12px' }}
+                                        className="btn-outline opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                        style={{ padding: '6px 14px', fontSize: '0.62rem' }}
                                     >
                                         Book
                                     </button>

@@ -7,7 +7,6 @@ const LoadingScreen = ({ onComplete }) => {
     const [pct, setPct] = useState(0);
 
     useEffect(() => {
-        // Animate progress bar with GSAP for smooth motion
         gsap.to(barRef.current, {
             scaleX: 1,
             duration: 1.8,
@@ -32,24 +31,27 @@ const LoadingScreen = ({ onComplete }) => {
         <div
             ref={ref}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-            style={{ background: '#0a0a0a' }}
+            style={{ background: 'var(--bg)' }}
         >
-            <div className="font-display text-5xl lg:text-7xl tracking-widest text-accent mb-3" style={{ letterSpacing: '0.12em' }}>
+            <div
+                className="font-display mb-3"
+                style={{ fontSize: 'clamp(2.5rem, 8vw, 5rem)', color: 'var(--accent)', letterSpacing: '0.1em' }}
+            >
                 CYBER LAUGHS
             </div>
-            <div className="font-mono text-xs text-t3 tracking-[0.4em] uppercase mb-10">
+            <div className="font-mono text-xs tracking-[0.4em] uppercase mb-10" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
                 Loading Experience
             </div>
 
             {/* Progress bar */}
-            <div className="w-48 h-px bg-surface overflow-hidden">
+            <div className="w-48 h-px overflow-hidden" style={{ background: 'var(--surface)' }}>
                 <div
                     ref={barRef}
                     className="loader-progress h-full"
                     style={{ transform: 'scaleX(0)', transformOrigin: 'left' }}
                 />
             </div>
-            <div className="font-mono text-xs text-t3 mt-3">{pct}%</div>
+            <div className="font-mono text-xs mt-3" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{pct}%</div>
         </div>
     );
 };
