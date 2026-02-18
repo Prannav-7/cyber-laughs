@@ -7,239 +7,131 @@ gsap.registerPlugin(ScrollTrigger);
 const comedians = [
     {
         id: 1,
-        name: 'ALEX VOLT',
-        specialty: 'Observational Chaos',
-        date: 'FRI MAR 07',
+        name: 'Alex Volt',
+        specialty: 'Observational',
+        date: 'Fri, Mar 7',
         time: '8:00 PM',
-        emoji: '⚡',
-        color: '#f72585',
-        bio: 'The human lightning bolt of comedy. Alex turns everyday absurdity into electric punchlines.',
-        shows: 47,
-        rating: 4.9,
+        price: '$35',
+        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format&fit=crop&crop=face',
+        bio: 'Turns everyday absurdity into electric punchlines. Sold out 12 consecutive shows.',
     },
     {
         id: 2,
-        name: 'MAYA GLITCH',
+        name: 'Maya Glitch',
         specialty: 'Tech Satire',
-        date: 'SAT MAR 08',
+        date: 'Sat, Mar 8',
         time: '9:30 PM',
-        emoji: '💻',
-        color: '#8338ec',
-        bio: 'Former software engineer turned comedian. Her bits about AI and Silicon Valley are dangerously accurate.',
-        shows: 63,
-        rating: 5.0,
+        price: '$40',
+        img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80&auto=format&fit=crop&crop=face',
+        bio: 'Former software engineer. Her bits about AI are dangerously accurate and hilarious.',
     },
     {
         id: 3,
-        name: 'RICO NEON',
+        name: 'Rico Neon',
         specialty: 'Street Philosophy',
-        date: 'FRI MAR 14',
+        date: 'Fri, Mar 14',
         time: '8:00 PM',
-        emoji: '🌆',
-        color: '#00f5ff',
-        bio: 'Rico sees the city as one giant punchline. His urban observations will make you laugh and think.',
-        shows: 89,
-        rating: 4.8,
+        price: '$35',
+        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&auto=format&fit=crop&crop=face',
+        bio: 'Sees the city as one giant punchline. Urban observations that make you laugh and think.',
     },
     {
         id: 4,
-        name: 'ZOE STATIC',
+        name: 'Zoe Static',
         specialty: 'Dark Absurdism',
-        date: 'SAT MAR 15',
+        date: 'Sat, Mar 15',
         time: '10:00 PM',
-        emoji: '🌀',
-        color: '#ffbe0b',
-        bio: 'Zoe exists in a dimension where logic is optional. Her sets are fever dreams you\'ll quote for weeks.',
-        shows: 34,
-        rating: 4.7,
+        price: '$40',
+        img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80&auto=format&fit=crop&crop=face',
+        bio: 'Exists in a dimension where logic is optional. Her sets are fever dreams you\'ll quote for weeks.',
     },
     {
         id: 5,
-        name: 'DANTE FLUX',
+        name: 'Dante Flux',
         specialty: 'Political Surrealism',
-        date: 'FRI MAR 21',
+        date: 'Fri, Mar 21',
         time: '8:30 PM',
-        emoji: '🔥',
-        color: '#ff006e',
-        bio: 'Dante weaponizes absurdity against the powerful. Politically charged, hilariously unhinged.',
-        shows: 112,
-        rating: 4.9,
+        price: '$45',
+        img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80&auto=format&fit=crop&crop=face',
+        bio: 'Weaponizes absurdity against the powerful. Politically charged, hilariously unhinged.',
     },
     {
         id: 6,
-        name: 'LUNA BYTE',
+        name: 'Luna Byte',
         specialty: 'Cosmic Weirdness',
-        date: 'SAT MAR 22',
+        date: 'Sat, Mar 22',
         time: '9:00 PM',
-        emoji: '🌙',
-        color: '#8338ec',
-        bio: 'Luna\'s comedy spans galaxies. From quantum physics to relationship drama — all equally absurd.',
-        shows: 28,
-        rating: 4.8,
+        price: '$40',
+        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80&auto=format&fit=crop&crop=face',
+        bio: 'Comedy that spans galaxies. From quantum physics to relationship drama — all equally absurd.',
     },
 ];
 
-const ComedianCard = ({ comedian, index }) => {
+const ComedianCard = ({ comedian }) => {
     const cardRef = useRef(null);
-    const glowRef = useRef(null);
 
     useEffect(() => {
         const card = cardRef.current;
+        if (!card) return;
 
-        // Magnetic hover pull
-        const handleMouseMove = (e) => {
+        // Magnetic pull — only on desktop
+        const onMove = (e) => {
             const rect = card.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
             const dx = e.clientX - cx;
             const dy = e.clientY - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const maxDist = 150;
-
-            if (dist < maxDist) {
-                const force = (maxDist - dist) / maxDist;
-                gsap.to(card, {
-                    x: dx * force * 0.2,
-                    y: dy * force * 0.2,
-                    rotateX: (-dy / rect.height) * 8,
-                    rotateY: (dx / rect.width) * 8,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                });
-
-                // Move glow
-                const glowX = ((e.clientX - rect.left) / rect.width) * 100;
-                const glowY = ((e.clientY - rect.top) / rect.height) * 100;
-                if (glowRef.current) {
-                    glowRef.current.style.background = `radial-gradient(circle at ${glowX}% ${glowY}%, ${comedian.color}20 0%, transparent 60%)`;
-                }
+            const dist = Math.hypot(dx, dy);
+            if (dist < 180) {
+                const f = (180 - dist) / 180;
+                gsap.to(card, { x: dx * f * 0.12, y: dy * f * 0.12, duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
             }
         };
-
-        const handleMouseLeave = () => {
-            gsap.to(card, {
-                x: 0,
-                y: 0,
-                rotateX: 0,
-                rotateY: 0,
-                duration: 0.6,
-                ease: 'elastic.out(1, 0.5)',
-            });
-            if (glowRef.current) {
-                glowRef.current.style.background = 'transparent';
-            }
+        const onLeave = () => {
+            gsap.to(card, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.6)', overwrite: 'auto' });
         };
 
-        window.addEventListener('mousemove', handleMouseMove);
-        card.addEventListener('mouseleave', handleMouseLeave);
-
+        window.addEventListener('mousemove', onMove);
+        card.addEventListener('mouseleave', onLeave);
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            card.removeEventListener('mouseleave', handleMouseLeave);
+            window.removeEventListener('mousemove', onMove);
+            card.removeEventListener('mouseleave', onLeave);
         };
-    }, [comedian.color]);
+    }, []);
 
     return (
-        <div
-            ref={cardRef}
-            className="comedian-card glass-card p-6 cursor-none"
-            style={{
-                transformStyle: 'preserve-3d',
-                willChange: 'transform',
-            }}
-        >
-            {/* Glow overlay */}
-            <div
-                ref={glowRef}
-                className="absolute inset-0 rounded-2xl pointer-events-none transition-all duration-300"
-                style={{ zIndex: 0 }}
-            />
-
-            {/* Card content */}
-            <div className="relative z-10">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                    <div
-                        className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl"
-                        style={{
-                            background: `linear-gradient(135deg, ${comedian.color}30, ${comedian.color}10)`,
-                            border: `1px solid ${comedian.color}40`,
-                            boxShadow: `0 0 20px ${comedian.color}20`,
-                        }}
-                    >
-                        {comedian.emoji}
-                    </div>
-                    <div className="text-right">
-                        <div
-                            className="show-badge px-2 py-1 text-xs mb-1"
-                            style={{ color: comedian.color, borderColor: `${comedian.color}40` }}
-                        >
-                            {comedian.date}
-                        </div>
-                        <div className="text-chrome-mid/60 text-xs font-mono">{comedian.time}</div>
-                    </div>
-                </div>
-
-                {/* Name */}
-                <h3
-                    className="font-display text-2xl mb-1 tracking-wider"
-                    style={{ color: comedian.color, textShadow: `0 0 20px ${comedian.color}60` }}
-                >
-                    {comedian.name}
-                </h3>
-
-                {/* Specialty */}
-                <p className="text-chrome-mid/60 text-xs font-mono tracking-widest uppercase mb-3">
-                    {comedian.specialty}
-                </p>
-
-                {/* Divider */}
-                <div
-                    className="h-px mb-4"
-                    style={{
-                        background: `linear-gradient(90deg, ${comedian.color}60, transparent)`,
-                    }}
+        <div ref={cardRef} className="comedian-card" style={{ willChange: 'transform' }}>
+            {/* Image */}
+            <div className="relative aspect-[3/4] overflow-hidden rounded-xl">
+                <img
+                    src={comedian.img}
+                    alt={comedian.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
                 />
+                <div className="comedian-card-overlay" />
 
-                {/* Bio */}
-                <p className="text-chrome-mid/70 text-sm leading-relaxed mb-4">{comedian.bio}</p>
+                {/* Bottom info */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                    <div className="tag mb-2">{comedian.specialty}</div>
+                    <h3 className="font-display text-2xl text-t1 tracking-wide leading-none mb-1">{comedian.name}</h3>
+                    <p className="text-t2 text-xs leading-relaxed mb-3 line-clamp-2">{comedian.bio}</p>
 
-                {/* Stats */}
-                <div className="flex items-center justify-between">
-                    <div className="flex gap-4">
+                    <div className="flex items-center justify-between">
                         <div>
-                            <div className="text-chrome-mid/40 text-xs font-mono">SHOWS</div>
-                            <div className="font-display text-lg" style={{ color: comedian.color }}>
-                                {comedian.shows}
-                            </div>
+                            <div className="text-accent font-mono text-xs">{comedian.date}</div>
+                            <div className="text-t3 font-mono text-xs">{comedian.time}</div>
                         </div>
-                        <div>
-                            <div className="text-chrome-mid/40 text-xs font-mono">RATING</div>
-                            <div className="font-display text-lg" style={{ color: comedian.color }}>
-                                {comedian.rating}★
-                            </div>
+                        <div className="flex items-center gap-3">
+                            <span className="font-display text-xl text-accent">{comedian.price}</span>
+                            <button
+                                className="btn-accent py-2 px-4 text-xs"
+                                style={{ fontSize: '0.65rem', padding: '8px 14px' }}
+                            >
+                                Book
+                            </button>
                         </div>
                     </div>
-
-                    <button
-                        className="px-4 py-2 text-xs font-mono tracking-widest uppercase transition-all duration-300 cursor-none"
-                        style={{
-                            background: `${comedian.color}15`,
-                            border: `1px solid ${comedian.color}40`,
-                            color: comedian.color,
-                            borderRadius: '6px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = `${comedian.color}30`;
-                            e.currentTarget.style.boxShadow = `0 0 20px ${comedian.color}30`;
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = `${comedian.color}15`;
-                            e.currentTarget.style.boxShadow = 'none';
-                        }}
-                    >
-                        Book Now
-                    </button>
                 </div>
             </div>
         </div>
@@ -248,125 +140,62 @@ const ComedianCard = ({ comedian, index }) => {
 
 const LineupSection = () => {
     const sectionRef = useRef(null);
-    const headingRef = useRef(null);
-    const gridRef = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Heading reveal
-            gsap.fromTo(
-                headingRef.current,
-                { opacity: 0, y: 60 },
+            gsap.fromTo('.lineup-header',
+                { opacity: 0, y: 40 },
                 {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    ease: 'power4.out',
-                    scrollTrigger: {
-                        trigger: headingRef.current,
-                        start: 'top 85%',
-                        toggleActions: 'play none none reverse',
-                    },
+                    opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+                    scrollTrigger: { trigger: '.lineup-header', start: 'top 85%' },
                 }
             );
 
-            // Cards stagger reveal
-            const cards = gridRef.current?.querySelectorAll('.comedian-card');
-            if (cards) {
-                gsap.fromTo(
-                    cards,
-                    { opacity: 0, y: 80, scale: 0.9 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        scale: 1,
-                        duration: 0.8,
-                        stagger: {
-                            amount: 0.8,
-                            from: 'start',
-                        },
-                        ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: gridRef.current,
-                            start: 'top 80%',
-                            toggleActions: 'play none none reverse',
-                        },
-                    }
-                );
-            }
+            // Cards — simple fade+translateY, staggered
+            gsap.fromTo('.comedian-card',
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1, y: 0,
+                    duration: 0.7,
+                    stagger: { amount: 0.6, from: 'start' },
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: '.lineup-grid',
+                        start: 'top 82%',
+                    },
+                }
+            );
         }, sectionRef);
 
         return () => ctx.revert();
     }, []);
 
     return (
-        <section
-            ref={sectionRef}
-            id="lineup"
-            className="relative py-32 px-6 lg:px-12 overflow-hidden"
-        >
-            {/* Background accent */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    background:
-                        'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(131,56,236,0.06) 0%, transparent 70%)',
-                }}
-            />
-
-            <div className="relative z-10 max-w-7xl mx-auto">
-                {/* Section header */}
-                <div ref={headingRef} className="text-center mb-16">
-                    <div className="inline-flex items-center gap-3 mb-4 px-4 py-2 show-badge">
-                        <span className="w-2 h-2 rounded-full bg-neon-purple animate-pulse" style={{ boxShadow: '0 0 8px #8338ec' }} />
-                        <span className="text-neon-purple font-mono text-xs tracking-widest">MARCH 2025 LINEUP</span>
-                    </div>
-
-                    <h2
-                        className="font-display leading-none mb-4"
-                        style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
-                    >
-                        <span className="gradient-text-chrome">THE </span>
-                        <span
-                            style={{
-                                background: 'linear-gradient(135deg, #f72585, #8338ec)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                                filter: 'drop-shadow(0 0 20px rgba(247,37,133,0.4))',
-                            }}
-                        >
-                            LEGENDS
-                        </span>
+        <section ref={sectionRef} id="lineup" className="py-28 px-6 lg:px-16 max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="lineup-header flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+                <div>
+                    <div className="section-label mb-4">March 2025</div>
+                    <h2 className="font-display leading-none" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', color: '#f5f5f5' }}>
+                        THE LINEUP
                     </h2>
-
-                    <p className="text-chrome-mid/60 max-w-xl mx-auto text-base leading-relaxed">
-                        Six nights of pure comedic electricity. Each performer handpicked to deliver maximum voltage.
-                    </p>
                 </div>
+                <p className="text-t2 text-sm max-w-xs leading-relaxed">
+                    Six nights of handpicked comedy. Each performer vetted for maximum impact.
+                </p>
+            </div>
 
-                {/* Grid */}
-                <div
-                    ref={gridRef}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                    {comedians.map((comedian, index) => (
-                        <ComedianCard key={comedian.id} comedian={comedian} index={index} />
-                    ))}
-                </div>
+            <div className="divider mb-14" />
 
-                {/* Bottom CTA */}
-                <div className="text-center mt-16">
-                    <p className="text-chrome-mid/50 font-mono text-sm mb-6 tracking-widest">
-                        MORE SHOWS ANNOUNCED WEEKLY
-                    </p>
-                    <button
-                        id="lineup-notify-btn"
-                        className="ticket-btn px-10 py-4 font-display text-xl text-white tracking-widest cursor-none"
-                    >
-                        <span className="relative z-10">GET NOTIFIED</span>
-                    </button>
-                </div>
+            {/* Grid */}
+            <div className="lineup-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {comedians.map(c => <ComedianCard key={c.id} comedian={c} />)}
+            </div>
+
+            {/* Footer */}
+            <div className="mt-14 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-t3 font-mono text-xs tracking-widest uppercase">More shows announced weekly</p>
+                <button id="lineup-notify" className="btn-ghost">Get Notified</button>
             </div>
         </section>
     );

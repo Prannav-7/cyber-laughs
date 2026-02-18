@@ -8,55 +8,45 @@ const CustomCursor = () => {
     useEffect(() => {
         const dot = dotRef.current;
         const ring = ringRef.current;
+        if (!dot || !ring) return;
 
-        let mouseX = 0;
-        let mouseY = 0;
-        let ringX = 0;
-        let ringY = 0;
+        let mx = 0, my = 0, rx = 0, ry = 0, raf;
 
-        const handleMouseMove = (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
+        const onMove = (e) => { mx = e.clientX; my = e.clientY; };
+        window.addEventListener('mousemove', onMove, { passive: true });
 
-            gsap.to(dot, {
-                x: mouseX,
-                y: mouseY,
-                duration: 0.1,
-                ease: 'power2.out',
-            });
+        // Dot follows instantly via GSAP set (no transition lag)
+        const onMoveGsap = (e) => {
+            gsap.set(dot, { x: e.clientX, y: e.clientY });
         };
+        window.addEventListener('mousemove', onMoveGsap, { passive: true });
 
-        // Smooth ring follow
-        const animateRing = () => {
-            ringX += (mouseX - ringX) * 0.12;
-            ringY += (mouseY - ringY) * 0.12;
-
-            gsap.set(ring, { x: ringX, y: ringY });
-            requestAnimationFrame(animateRing);
+        // Ring lags behind
+        const tick = () => {
+            raf = requestAnimationFrame(tick);
+            rx += (mx - rx) * 0.1;
+            ry += (my - ry) * 0.1;
+            gsap.set(ring, { x: rx, y: ry });
         };
-        animateRing();
+        tick();
 
-        // Hover effects
-        const handleMouseEnter = () => ring.classList.add('hovering');
-        const handleMouseLeave = () => ring.classList.remove('hovering');
-
-        const interactables = document.querySelectorAll('button, a, [class*="cursor-none"]');
-        interactables.forEach((el) => {
-            el.addEventListener('mouseenter', handleMouseEnter);
-            el.addEventListener('mouseleave', handleMouseLeave);
-        });
-
-        window.addEventListener('mousemove', handleMouseMove);
+        // Hover expand
+        const addHover = () => ring.classList.add('hovering');
+        const remHover = () => ring.classList.remove('hovering');
+        const targets = document.querySelectorAll('button, a, input, [data-hover]');
+        targets.forEach(el => { el.addEventListener('mouseenter', addHover); el.addEventListener('mouseleave', remHover); });
 
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mousemove', onMoveGsap);
+            cancelAnimationFrame(raf);
         };
     }, []);
 
     return (
         <>
-            <div ref={dotRef} className="cursor-dot" />
-            <div ref={ringRef} className="cursor-ring" />
+            <div ref={dotRef} className="cursor-dot" style={{ transform: 'translate(-50%, -50%)' }} />
+            <div ref={ringRef} className="cursor-ring" style={{ transform: 'translate(-50%, -50%)' }} />
         </>
     );
 };

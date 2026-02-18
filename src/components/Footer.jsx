@@ -1,66 +1,35 @@
-const Footer = () => {
-    return (
-        <footer
-            className="relative py-16 px-6 lg:px-12 overflow-hidden"
-            style={{ borderTop: '1px solid rgba(247,37,133,0.1)' }}
-        >
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    background: 'linear-gradient(to top, rgba(247,37,133,0.03) 0%, transparent 100%)',
-                }}
-            />
-
-            <div className="relative z-10 max-w-7xl mx-auto">
-                <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-                    {/* Logo */}
-                    <div>
-                        <div
-                            className="font-display text-3xl tracking-widest mb-2"
-                            style={{
-                                background: 'linear-gradient(135deg, #f72585, #8338ec)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                            }}
-                        >
-                            CYBER LAUGHS
-                        </div>
-                        <div className="text-chrome-mid/40 font-mono text-xs tracking-widest">
-                            UNDERGROUND COMEDY CLUB — EST. 2024
-                        </div>
-                    </div>
-
-                    {/* Links */}
-                    <div className="flex gap-8">
-                        {['Instagram', 'TikTok', 'YouTube', 'Twitter'].map((social) => (
-                            <a
-                                key={social}
-                                href="#"
-                                className="text-chrome-mid/40 hover:text-magenta-400 font-mono text-xs tracking-widest uppercase transition-colors duration-300 cursor-none"
-                            >
-                                {social}
-                            </a>
-                        ))}
-                    </div>
-
-                    {/* Address */}
-                    <div className="text-right text-chrome-mid/40 font-mono text-xs">
-                        <div>42 Underground Ave</div>
-                        <div>Cyber District, CD 00001</div>
-                        <div className="text-magenta-400 mt-1">info@cyberlaughs.com</div>
-                    </div>
+const Footer = () => (
+    <footer className="py-16 px-6 lg:px-16" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
+                {/* Brand */}
+                <div>
+                    <div className="font-display text-2xl text-accent tracking-widest mb-1">CYBER LAUGHS</div>
+                    <div className="text-t3 font-mono text-xs tracking-widest">Underground Comedy Club — Est. 2024</div>
                 </div>
 
-                <div className="neon-hr my-8" />
+                {/* Links */}
+                <div className="flex flex-wrap gap-x-8 gap-y-3">
+                    {['Instagram', 'TikTok', 'YouTube', 'Twitter'].map(s => (
+                        <a key={s} href="#" className="nav-link">{s}</a>
+                    ))}
+                </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-chrome-mid/30 font-mono text-xs">
-                    <span>© 2025 CYBER LAUGHS. ALL RIGHTS RESERVED.</span>
-                    <span>BUILT WITH ⚡ AND DARK HUMOR</span>
+                {/* Address */}
+                <div className="text-t3 font-mono text-xs leading-relaxed">
+                    <div>42 Underground Ave, Cyber District</div>
+                    <div className="text-accent mt-1">info@cyberlaughs.com</div>
                 </div>
             </div>
-        </footer>
-    );
-};
+
+            <div className="divider my-8" />
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-t3 font-mono text-xs">
+                <span>© 2025 Cyber Laughs. All rights reserved.</span>
+                <span>Built with care and dark humor.</span>
+            </div>
+        </div>
+    </footer>
+);
 
 export default Footer;

@@ -1,43 +1,13 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 const ParticleSystem = () => {
     const canvasRef = useRef(null);
-    const particlesRef = useRef([]);
-    const ripplesRef = useRef([]);
-    const animFrameRef = useRef(null);
-    const mouseRef = useRef({ x: 0, y: 0 });
-
-    const createParticle = useCallback((x, y, isClick = false) => {
-        const colors = ['#f72585', '#8338ec', '#00f5ff', '#ffbe0b', '#ff006e'];
-        return {
-            x: x ?? Math.random() * window.innerWidth,
-            y: y ?? Math.random() * window.innerHeight,
-            vx: (Math.random() - 0.5) * (isClick ? 4 : 0.4),
-            vy: (Math.random() - 0.5) * (isClick ? 4 : 0.4) - (isClick ? 2 : 0),
-            size: isClick ? Math.random() * 4 + 2 : Math.random() * 2 + 0.5,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            alpha: isClick ? 1 : Math.random() * 0.6 + 0.1,
-            decay: isClick ? 0.015 : 0.002,
-            life: 1,
-            isClick,
-        };
-    }, []);
-
-    const createRipple = useCallback((x, y) => {
-        return {
-            x,
-            y,
-            radius: 0,
-            maxRadius: 200 + Math.random() * 100,
-            alpha: 1,
-            color: Math.random() > 0.5 ? '#f72585' : '#8338ec',
-            speed: 4 + Math.random() * 3,
-        };
-    }, []);
+    const stateRef = useRef({ particles: [], ripples: [], mouse: { x: -999, y: -999 }, raf: null });
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
+        const state = stateRef.current;
 
         const resize = () => {
             canvas.width = window.innerWidth;
@@ -46,141 +16,106 @@ const ParticleSystem = () => {
         resize();
         window.addEventListener('resize', resize);
 
-        // Initialize ambient particles
-        for (let i = 0; i < 120; i++) {
-            particlesRef.current.push(createParticle());
-        }
+        // Spawn ambient particles
+        const spawn = () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.25,
+            r: Math.random() * 1.2 + 0.3,
+            alpha: Math.random() * 0.35 + 0.05,
+            life: 1,
+        });
 
-        const handleClick = (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+        for (let i = 0; i < 80; i++) state.particles.push(spawn());
 
+        const onClick = (e) => {
             // Laughter ripple
-            for (let i = 0; i < 3; i++) {
-                ripplesRef.current.push(createRipple(x, y));
+            for (let i = 0; i < 2; i++) {
+                state.ripples.push({ x: e.clientX, y: e.clientY, r: 0, maxR: 160 + i * 60, alpha: 0.5 });
             }
-
-            // Burst particles
-            for (let i = 0; i < 20; i++) {
-                particlesRef.current.push(createParticle(x, y, true));
+            // Burst
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const speed = 1.5 + Math.random() * 2;
+                state.particles.push({
+                    x: e.clientX, y: e.clientY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    r: Math.random() * 2 + 1,
+                    alpha: 0.7,
+                    life: 1,
+                    burst: true,
+                });
             }
         };
 
-        const handleMouseMove = (e) => {
-            mouseRef.current = { x: e.clientX, y: e.clientY };
-        };
+        const onMove = (e) => { state.mouse.x = e.clientX; state.mouse.y = e.clientY; };
 
-        window.addEventListener('click', handleClick);
-        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('click', onClick);
+        window.addEventListener('mousemove', onMove);
 
-        const animate = () => {
+        const ACCENT = '232,197,71';
+
+        const tick = () => {
+            state.raf = requestAnimationFrame(tick);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw connection lines between nearby particles
-            const particles = particlesRef.current;
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 100) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(247, 37, 133, ${0.05 * (1 - dist / 100)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
+            // Particles
+            state.particles = state.particles.filter(p => p.life > 0.01);
+            for (const p of state.particles) {
+                if (p.burst) {
+                    p.vx *= 0.94; p.vy *= 0.94;
+                    p.life -= 0.025;
+                } else {
+                    // Gentle mouse repulsion
+                    const dx = p.x - state.mouse.x;
+                    const dy = p.y - state.mouse.y;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < 8000) {
+                        const d = Math.sqrt(d2);
+                        const f = (90 - d) / 90 * 0.15;
+                        p.vx += (dx / d) * f;
+                        p.vy += (dy / d) * f;
                     }
-                }
-            }
-
-            // Update and draw particles
-            particlesRef.current = particlesRef.current.filter(p => p.life > 0);
-            particlesRef.current.forEach(p => {
-                // Mouse repulsion for ambient particles
-                if (!p.isClick) {
-                    const dx = p.x - mouseRef.current.x;
-                    const dy = p.y - mouseRef.current.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 120) {
-                        const force = (120 - dist) / 120;
-                        p.vx += (dx / dist) * force * 0.3;
-                        p.vy += (dy / dist) * force * 0.3;
-                    }
-                    // Dampen velocity
-                    p.vx *= 0.98;
-                    p.vy *= 0.98;
-                }
-
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life -= p.decay;
-
-                // Wrap ambient particles
-                if (!p.isClick) {
+                    p.vx *= 0.99; p.vy *= 0.99;
+                    // Wrap
                     if (p.x < 0) p.x = canvas.width;
                     if (p.x > canvas.width) p.x = 0;
                     if (p.y < 0) p.y = canvas.height;
                     if (p.y > canvas.height) p.y = 0;
-                    p.life = Math.max(p.life, 0.05); // Keep ambient alive
                 }
+                p.x += p.vx; p.y += p.vy;
 
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.alpha * p.life;
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${ACCENT},${p.alpha * p.life})`;
                 ctx.fill();
+            }
 
-                // Glow
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = p.color;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.globalAlpha = 1;
-            });
-
-            // Update and draw ripples
-            ripplesRef.current = ripplesRef.current.filter(r => r.alpha > 0);
-            ripplesRef.current.forEach(r => {
-                r.radius += r.speed;
-                r.alpha = Math.max(0, 1 - r.radius / r.maxRadius);
-
-                // Draw multiple rings for "laughter" effect
-                for (let ring = 0; ring < 3; ring++) {
-                    const ringRadius = r.radius - ring * 20;
-                    if (ringRadius > 0) {
-                        ctx.beginPath();
-                        ctx.arc(r.x, r.y, ringRadius, 0, Math.PI * 2);
-                        ctx.strokeStyle = r.color;
-                        ctx.globalAlpha = r.alpha * (1 - ring * 0.3);
-                        ctx.lineWidth = 2 - ring * 0.5;
-                        ctx.stroke();
-                        ctx.globalAlpha = 1;
-                    }
-                }
-            });
-
-            animFrameRef.current = requestAnimationFrame(animate);
+            // Ripples
+            state.ripples = state.ripples.filter(r => r.alpha > 0.01);
+            for (const r of state.ripples) {
+                r.r += 3.5;
+                r.alpha *= 0.93;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(${ACCENT},${r.alpha})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
         };
-
-        animate();
+        tick();
 
         return () => {
             window.removeEventListener('resize', resize);
-            window.removeEventListener('click', handleClick);
-            window.removeEventListener('mousemove', handleMouseMove);
-            cancelAnimationFrame(animFrameRef.current);
+            window.removeEventListener('click', onClick);
+            window.removeEventListener('mousemove', onMove);
+            cancelAnimationFrame(state.raf);
         };
-    }, [createParticle, createRipple]);
+    }, []);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            id="particle-canvas"
-            style={{ position: 'fixed', top: 0, left: 0, zIndex: 0, pointerEvents: 'none' }}
-        />
-    );
+    return <canvas ref={canvasRef} id="particle-canvas" />;
 };
 
 export default ParticleSystem;

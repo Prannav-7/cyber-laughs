@@ -15,36 +15,45 @@ import Footer from './components/Footer';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Global GSAP defaults for smooth, professional motion
+gsap.defaults({ ease: 'power3.out', duration: 0.8 });
+
+// ScrollTrigger — use native scroll for best performance
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 function App() {
   const [loaded, setLoaded] = useState(false);
 
   const handleLoadComplete = () => {
     setLoaded(true);
-    // Refresh ScrollTrigger after load
-    setTimeout(() => ScrollTrigger.refresh(), 100);
+    // Let DOM paint before refreshing triggers
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
   };
 
   return (
     <>
-      {/* Noise texture overlay */}
+      {/* Subtle film grain */}
       <div className="noise-overlay" />
 
       {/* Custom cursor */}
       <CustomCursor />
 
-      {/* Particle system (fixed background) */}
+      {/* Ambient particles (fixed, behind everything) */}
       <ParticleSystem />
 
       {/* Loading screen */}
       {!loaded && <LoadingScreen onComplete={handleLoadComplete} />}
 
-      {/* Main content */}
+      {/* Main site */}
       <div
-        className="relative z-10"
         style={{
           opacity: loaded ? 1 : 0,
           transition: 'opacity 0.5s ease',
           pointerEvents: loaded ? 'auto' : 'none',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
         <Navbar />

@@ -5,290 +5,166 @@ import MicrophoneScene from './MicrophoneScene';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Real Unsplash images — comedy club / stage atmosphere
+const BG_IMAGE = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1800&q=80&auto=format&fit=crop';
+
 const HeroSection = () => {
     const heroRef = useRef(null);
     const titleRef = useRef(null);
-    const subtitleRef = useRef(null);
-    const ctaRef = useRef(null);
-    const taglineRef = useRef(null);
-    const scrollIndicatorRef = useRef(null);
+    const contentRef = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Initial entrance animation
-            gsap.fromTo(
-                '.hero-badge',
-                { opacity: 0, y: -20 },
-                { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.3 }
-            );
+            // Entrance — stagger children, use transform only (GPU)
+            const tl = gsap.timeline({ delay: 0.2 });
 
-            // Kinetic title — each word scales up on scroll
-            const titleWords = titleRef.current?.querySelectorAll('.kinetic-word');
-            if (titleWords) {
-                gsap.fromTo(
-                    titleWords,
-                    { opacity: 0, y: 80, rotateX: -45 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        rotateX: 0,
-                        duration: 1,
-                        stagger: 0.15,
-                        ease: 'power4.out',
-                        delay: 0.5,
-                    }
+            tl.fromTo('.hero-label',
+                { opacity: 0, y: 16 },
+                { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }
+            )
+                .fromTo('.hero-word',
+                    { opacity: 0, y: 48, skewY: 4 },
+                    { opacity: 1, y: 0, skewY: 0, duration: 0.9, stagger: 0.12, ease: 'power4.out' },
+                    '-=0.3'
+                )
+                .fromTo('.hero-sub',
+                    { opacity: 0, y: 20 },
+                    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+                    '-=0.4'
+                )
+                .fromTo('.hero-cta',
+                    { opacity: 0, y: 20 },
+                    { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' },
+                    '-=0.3'
+                )
+                .fromTo('.hero-stats > div',
+                    { opacity: 0, y: 16 },
+                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
+                    '-=0.2'
+                )
+                .fromTo('.hero-mic',
+                    { opacity: 0, scale: 0.92 },
+                    { opacity: 1, scale: 1, duration: 1, ease: 'power3.out' },
+                    0.4
                 );
 
-                // Kinetic expansion on scroll
+            // Kinetic title scale on scroll — transform only, no layout
+            const words = titleRef.current?.querySelectorAll('.hero-word');
+            if (words) {
                 ScrollTrigger.create({
                     trigger: heroRef.current,
                     start: 'top top',
                     end: 'bottom top',
-                    scrub: 1,
+                    scrub: 1.5,
                     onUpdate: (self) => {
-                        const progress = self.progress;
-                        titleWords.forEach((word, i) => {
-                            const scale = 1 + progress * (0.3 + i * 0.1);
-                            const opacity = 1 - progress * 0.6;
-                            gsap.set(word, { scale, opacity, transformOrigin: 'center center' });
+                        const p = self.progress;
+                        words.forEach((w, i) => {
+                            const s = 1 + p * (0.15 + i * 0.05);
+                            w.style.transform = `translateY(${p * -20}px) scale(${s})`;
+                            w.style.opacity = String(1 - p * 0.7);
                         });
                     },
                 });
             }
 
-            // Subtitle fade
-            gsap.fromTo(
-                subtitleRef.current,
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 1 }
-            );
-
-            // CTA buttons
-            gsap.fromTo(
-                ctaRef.current?.children,
-                { opacity: 0, y: 30, scale: 0.9 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    duration: 0.8,
-                    stagger: 0.15,
-                    ease: 'back.out(1.7)',
-                    delay: 1.3,
-                }
-            );
-
-            // Tagline
-            gsap.fromTo(
-                taglineRef.current,
-                { opacity: 0 },
-                { opacity: 1, duration: 1.5, delay: 1.8 }
-            );
-
-            // Scroll indicator bounce
-            gsap.to(scrollIndicatorRef.current, {
-                y: 10,
-                duration: 1.2,
-                ease: 'power1.inOut',
-                yoyo: true,
-                repeat: -1,
-                delay: 2.5,
-            });
-
-            // Hero parallax
-            ScrollTrigger.create({
-                trigger: heroRef.current,
-                start: 'top top',
-                end: 'bottom top',
-                scrub: true,
-                onUpdate: (self) => {
-                    gsap.set(heroRef.current, {
-                        backgroundPositionY: `${self.progress * 50}%`,
-                    });
-                },
+            // Scroll indicator fade
+            gsap.to('.scroll-indicator', {
+                y: 8, duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1,
             });
         }, heroRef);
 
         return () => ctx.revert();
     }, []);
 
-    // Magnetic button effect
-    const handleMagneticMove = (e, el) => {
-        const rect = el.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
-        gsap.to(el, { x: dx * 0.3, y: dy * 0.3, duration: 0.3, ease: 'power2.out' });
-    };
-
-    const handleMagneticLeave = (el) => {
-        gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
-    };
+    const scrollToLineup = () => document.getElementById('lineup')?.scrollIntoView({ behavior: 'smooth' });
 
     return (
         <section
             ref={heroRef}
             id="hero"
-            className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg"
-            style={{ perspective: '1000px' }}
+            className="relative min-h-screen flex items-center overflow-hidden"
         >
-            {/* Radial gradient background */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    background:
-                        'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(247,37,133,0.12) 0%, rgba(131,56,236,0.08) 40%, transparent 70%)',
-                }}
-            />
+            {/* Background image */}
+            <div className="absolute inset-0 z-0">
+                <img
+                    src={BG_IMAGE}
+                    alt="Comedy club stage"
+                    className="w-full h-full object-cover"
+                    style={{ filter: 'brightness(0.18) saturate(0.4)' }}
+                />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(10,10,10,0.98) 40%, rgba(10,10,10,0.5) 100%)' }} />
+                <div className="absolute inset-0 hero-dots opacity-60" />
+            </div>
 
-            {/* Vignette */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    background:
-                        'radial-gradient(ellipse at center, transparent 40%, rgba(3,3,6,0.8) 100%)',
-                }}
-            />
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-16 pt-28 pb-20 flex flex-col lg:flex-row items-center gap-16">
 
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12 pt-24">
-                {/* Left: Text content */}
-                <div className="flex-1 text-center lg:text-left">
-                    {/* Badge */}
-                    <div className="hero-badge inline-flex items-center gap-2 mb-6 px-4 py-2 show-badge">
-                        <span className="w-2 h-2 rounded-full bg-magenta-400 animate-pulse" style={{ boxShadow: '0 0 8px #f72585' }} />
-                        <span className="text-magenta-400 font-mono text-xs tracking-widest">LIVE EVERY FRIDAY & SATURDAY</span>
-                    </div>
+                {/* ── Left: Text ── */}
+                <div className="flex-1 min-w-0">
+                    <div className="hero-label section-label mb-6">Live Comedy — Est. 2024</div>
 
-                    {/* Kinetic title */}
                     <h1
                         ref={titleRef}
-                        className="font-display leading-none mb-6"
-                        style={{ fontSize: 'clamp(3.5rem, 10vw, 9rem)', perspective: '800px' }}
+                        className="font-display leading-[0.9] mb-6 overflow-hidden"
+                        style={{ fontSize: 'clamp(4rem, 9vw, 8.5rem)' }}
                     >
                         <div className="overflow-hidden">
-                            <span className="kinetic-word inline-block gradient-text-chrome">CYBER</span>
+                            <span className="hero-word inline-block" style={{ color: '#f5f5f5' }}>CYBER</span>
                         </div>
                         <div className="overflow-hidden">
-                            <span
-                                className="kinetic-word inline-block"
-                                style={{
-                                    background: 'linear-gradient(135deg, #f72585, #8338ec)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
-                                    textShadow: 'none',
-                                    filter: 'drop-shadow(0 0 30px rgba(247,37,133,0.5))',
-                                }}
-                            >
-                                LAUGHS
-                            </span>
+                            <span className="hero-word inline-block text-accent">LAUGHS</span>
+                        </div>
+                        <div className="overflow-hidden">
+                            <span className="hero-word inline-block" style={{ color: '#555', fontSize: '0.55em', letterSpacing: '0.15em' }}>UNDERGROUND</span>
                         </div>
                     </h1>
 
-                    {/* Glitch subtitle */}
-                    <div className="relative mb-4 overflow-hidden">
-                        <p
-                            ref={subtitleRef}
-                            className="font-mono text-sm lg:text-base tracking-[0.3em] text-chrome-mid uppercase"
-                        >
-                            Underground Comedy Club — Est. 2024
-                        </p>
-                    </div>
-
-                    {/* Description */}
-                    <p
-                        ref={taglineRef}
-                        className="text-chrome-mid/70 text-base lg:text-lg max-w-lg mb-10 leading-relaxed font-light"
-                    >
-                        Where neon meets punchlines. The most electrifying comedy experience in the city — live shows, legendary lineups, and kinetic chaos every night.
+                    <p className="hero-sub text-t2 text-base lg:text-lg max-w-md mb-10 leading-relaxed font-light">
+                        The city's most intimate comedy venue. Handpicked headliners, electric atmosphere, and punchlines that land every time.
                     </p>
 
-                    {/* CTA Buttons */}
-                    <div ref={ctaRef} className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                        <button
-                            id="hero-cta-tickets"
-                            className="ticket-btn magnetic-btn relative z-10 px-8 py-4 font-display text-xl text-white tracking-widest cursor-none"
-                            onMouseMove={(e) => handleMagneticMove(e, e.currentTarget)}
-                            onMouseLeave={(e) => handleMagneticLeave(e.currentTarget)}
-                        >
-                            <span className="relative z-10">GET TICKETS</span>
+                    <div className="flex flex-wrap gap-3 mb-14">
+                        <button id="hero-tickets" className="hero-cta btn-accent" onClick={scrollToLineup}>
+                            Book Tickets
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                         </button>
-
-                        <button
-                            id="hero-cta-lineup"
-                            className="magnetic-btn relative px-8 py-4 font-display text-xl tracking-widest border border-magenta-400/40 text-chrome-light hover:border-magenta-400 transition-all duration-300 cursor-none"
-                            style={{ background: 'rgba(247,37,133,0.05)' }}
-                            onMouseMove={(e) => handleMagneticMove(e, e.currentTarget)}
-                            onMouseLeave={(e) => handleMagneticLeave(e.currentTarget)}
-                            onClick={() => document.getElementById('lineup')?.scrollIntoView({ behavior: 'smooth' })}
-                        >
-                            VIEW LINEUP
+                        <button id="hero-lineup" className="hero-cta btn-ghost" onClick={scrollToLineup}>
+                            View Lineup
                         </button>
                     </div>
 
-                    {/* Stats row */}
-                    <div className="flex gap-8 mt-12 justify-center lg:justify-start">
+                    {/* Stats */}
+                    <div className="hero-stats flex gap-10">
                         {[
-                            { value: '200+', label: 'Shows' },
-                            { value: '50K+', label: 'Laughs' },
-                            { value: '4.9★', label: 'Rating' },
-                        ].map((stat) => (
-                            <div key={stat.label} className="text-center">
-                                <div
-                                    className="font-display text-3xl"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #f72585, #8338ec)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text',
-                                    }}
-                                >
-                                    {stat.value}
-                                </div>
-                                <div className="text-chrome-mid/60 text-xs font-mono tracking-widest uppercase mt-1">
-                                    {stat.label}
-                                </div>
+                            { n: '200+', l: 'Shows' },
+                            { n: '50K+', l: 'Tickets Sold' },
+                            { n: '4.9', l: 'Avg Rating' },
+                        ].map(s => (
+                            <div key={s.l}>
+                                <div className="font-display text-3xl text-accent">{s.n}</div>
+                                <div className="text-t3 text-xs font-mono mt-0.5 tracking-widest uppercase">{s.l}</div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Right: 3D Microphone */}
-                <div className="flex-1 flex items-center justify-center">
+                {/* ── Right: 3D Mic ── */}
+                <div
+                    className="hero-mic flex-shrink-0 relative"
+                    style={{ width: 'clamp(280px, 38vw, 480px)', height: 'clamp(280px, 38vw, 480px)' }}
+                >
+                    {/* Subtle glow disc */}
                     <div
-                        className="relative"
-                        style={{ width: 'clamp(300px, 40vw, 520px)', height: 'clamp(300px, 40vw, 520px)' }}
-                    >
-                        {/* Glow ring behind mic */}
-                        <div
-                            className="absolute inset-0 rounded-full"
-                            style={{
-                                background:
-                                    'radial-gradient(ellipse at center, rgba(247,37,133,0.2) 0%, rgba(131,56,236,0.1) 40%, transparent 70%)',
-                                animation: 'pulseGlow 3s ease-in-out infinite',
-                            }}
-                        />
-                        <div
-                            className="absolute inset-8 rounded-full border border-magenta-400/20"
-                            style={{ animation: 'float 4s ease-in-out infinite' }}
-                        />
-                        <div
-                            className="absolute inset-16 rounded-full border border-neon-purple/20"
-                            style={{ animation: 'float 6s ease-in-out infinite reverse' }}
-                        />
-                        <MicrophoneScene />
-                    </div>
+                        className="absolute inset-0 rounded-full"
+                        style={{ background: 'radial-gradient(ellipse at center, rgba(232,197,71,0.08) 0%, transparent 70%)' }}
+                    />
+                    <MicrophoneScene />
                 </div>
             </div>
 
             {/* Scroll indicator */}
-            <div
-                ref={scrollIndicatorRef}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60"
-            >
-                <span className="font-mono text-xs tracking-widest text-chrome-mid">SCROLL</span>
-                <div className="w-px h-12 bg-gradient-to-b from-magenta-400 to-transparent" />
+            <div className="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
+                <div className="w-px h-10 bg-gradient-to-b from-accent to-transparent" />
+                <span className="font-mono text-[10px] tracking-[0.3em] text-t3 uppercase">Scroll</span>
             </div>
         </section>
     );
