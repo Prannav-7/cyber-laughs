@@ -88,51 +88,50 @@ const TestimonialsSection = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16">
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16 md:py-24">
                 {/* Rating summary */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
-                    <div className="flex items-center gap-4">
-                        <div className="font-display text-6xl" style={{ color: 'var(--accent)' }}>4.9</div>
-                        <div>
-                            <div className="flex gap-1 mb-1">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 md:mb-20 text-center md:text-left">
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                        <div className="font-display text-7xl md:text-8xl" style={{ color: 'var(--accent)' }}>4.9</div>
+                        <div className="flex flex-col items-center md:items-start">
+                            <div className="flex gap-1.5 mb-2">
                                 {[...Array(5)].map((_, i) => (
-                                    <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#e8b84b">
+                                    <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill="#e8b84b">
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
                                 ))}
                             </div>
-                            <div className="font-mono text-xs" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>from 1,200+ reviews</div>
+                            <div className="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase opacity-50">from 1,200+ verified reviews</div>
                         </div>
                     </div>
-                    <p className="text-sm max-w-sm leading-relaxed" style={{ color: 'var(--t2)' }}>
+                    <p className="text-sm md:text-base max-w-sm leading-relaxed opacity-70 mx-auto md:mx-0">
                         Real words from real audience members. No filters, no PR spin — just honest reactions.
                     </p>
                 </div>
 
-                <div className="divider mb-12" />
+                <div className="divider mb-16 md:mb-20 opacity-10" />
 
-                <div className="testimonials-grid grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="testimonials-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {testimonials.map((t, i) => (
-                        <div key={i} className="testimonial-card">
-                            <div className="flex gap-1 mb-4">
+                        <div key={i} className="testimonial-card p-6 md:p-8 border border-white/5 hover:border-accent/20 transition-all duration-300">
+                            <div className="flex gap-1 mb-5">
                                 {[...Array(t.rating)].map((_, si) => (
-                                    <svg key={si} width="12" height="12" viewBox="0 0 24 24" fill="#e8b84b">
+                                    <svg key={si} width="14" height="14" viewBox="0 0 24 24" fill="#e8b84b">
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
                                 ))}
                             </div>
-                            <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--t2)' }}>"{t.quote}"</p>
-                            <div className="flex items-center gap-3">
+                            <p className="text-sm md:text-base leading-relaxed mb-8 opacity-90 italic">"{t.quote}"</p>
+                            <div className="flex items-center gap-4 mt-auto">
                                 <img
                                     src={t.img}
                                     alt={t.author}
-                                    className="w-9 h-9 rounded-full object-cover"
-                                    style={{ border: '1px solid rgba(232,184,75,0.2)' }}
+                                    className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-accent/20"
                                     loading="lazy"
                                 />
                                 <div>
-                                    <div className="text-sm font-medium" style={{ color: 'var(--t1)' }}>{t.author}</div>
-                                    <div className="font-mono text-xs" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{t.role}</div>
+                                    <div className="text-sm md:text-base font-medium" style={{ color: 'var(--t1)' }}>{t.author}</div>
+                                    <div className="font-mono text-[10px] md:text-xs tracking-wider opacity-50">{t.role}</div>
                                 </div>
                             </div>
                         </div>

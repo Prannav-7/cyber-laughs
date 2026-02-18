@@ -82,55 +82,61 @@ const ScheduleSection = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-20">
-                <div className="flex flex-col lg:flex-row gap-20">
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-12 md:py-20">
+                <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
 
-                    {/* Left */}
-                    <div className="sched-left lg:w-72 flex-shrink-0">
-                        <div className="section-label mb-5">Venue</div>
-                        <h3 className="font-display text-3xl mb-1" style={{ color: 'var(--t1)' }}>The Neon Bunker</h3>
-                        <p className="font-mono text-xs mb-6" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
+                    {/* Left - Venue Info */}
+                    <div className="sched-left lg:w-72 flex-shrink-0 text-center lg:text-left">
+                        <div className="section-label mb-5 justify-center lg:justify-start">Venue</div>
+                        <h3 className="font-display text-4xl mb-2" style={{ color: 'var(--t1)' }}>The Neon Bunker</h3>
+                        <p className="font-mono text-xs mb-8" style={{ color: 'var(--t3)' }}>
                             42 Underground Ave, Cyber District
                         </p>
 
-                        <div className="divider mb-6" />
+                        <div className="divider mb-8" />
 
-                        <div className="space-y-4">
+                        <div className="space-y-4 max-w-sm mx-auto lg:mx-0">
                             {[
                                 ['Doors open', '1 hr before show'],
                                 ['Age policy', '18+ after 9 PM'],
                                 ['Parking', 'Street + Garage'],
                                 ['Dress code', 'Smart casual'],
                             ].map(([k, v]) => (
-                                <div key={k} className="flex justify-between items-center">
-                                    <span className="font-mono text-xs uppercase tracking-widest" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{k}</span>
-                                    <span className="font-mono text-xs" style={{ color: 'var(--t2)', fontFamily: 'DM Mono, monospace' }}>{v}</span>
+                                <div key={k} className="flex justify-between items-center text-xs">
+                                    <span className="font-mono uppercase tracking-widest" style={{ color: 'var(--t3)' }}>{k}</span>
+                                    <span className="font-mono" style={{ color: 'var(--t2)' }}>{v}</span>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="divider my-6" />
+                        <div className="divider my-8" />
                         <button className="btn-primary w-full justify-center">Reserve a Table</button>
                     </div>
 
                     {/* Right: Rows */}
-                    <div className="sched-rows flex-1">
+                    <div className="sched-rows flex-1 w-full">
                         {shows.map((s) => (
-                            <div key={s.day} className="schedule-row group">
-                                <div className="s-day font-display text-2xl w-16 flex-shrink-0 transition-colors duration-200" style={{ color: 'var(--t3)' }}>
+                            <div key={s.day} className="schedule-row group border-b border-white/5 py-6">
+                                <div className="s-day font-display text-3xl w-16 flex-shrink-0 transition-colors duration-200" style={{ color: 'var(--t3)' }}>
                                     {s.day}
                                 </div>
-                                <div className="flex-1 px-6">
-                                    <div className="font-medium text-sm" style={{ color: 'var(--t1)' }}>{s.label}</div>
-                                    <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{s.time}</div>
+                                <div className="flex-1 px-4 md:px-6">
+                                    <div className="font-medium text-sm md:text-base" style={{ color: 'var(--t1)' }}>{s.label}</div>
+                                    <div className="font-mono text-[10px] md:text-xs mt-0.8" style={{ color: 'var(--t3)' }}>{s.time}</div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <span className="font-display text-xl" style={{ color: 'var(--accent)' }}>{s.price}</span>
+                                    <span className="font-display text-xl md:text-2xl" style={{ color: 'var(--accent)' }}>{s.price}</span>
                                     <button
-                                        className="btn-outline opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                        className="btn-outline opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden md:block"
                                         style={{ padding: '6px 14px', fontSize: '0.62rem' }}
                                     >
                                         Book
+                                    </button>
+                                    <button
+                                        className="btn-primary md:hidden"
+                                        style={{ padding: '6px 12px', fontSize: '0.6rem' }}
+                                    >
+                                        Ticket
                                     </button>
                                 </div>
                             </div>

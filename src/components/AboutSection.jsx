@@ -15,7 +15,7 @@ const AboutSection = () => {
         const ctx = gsap.context(() => {
             // Parallax on the background image
             gsap.to(imgRef.current, {
-                yPercent: 25,
+                yPercent: 20,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: sectionRef.current,
@@ -37,14 +37,15 @@ const AboutSection = () => {
                 }
             );
 
-            // Right image reveal
-            gsap.fromTo('.about-right-img',
-                { opacity: 0, x: 40, scale: 0.96 },
+            // Right stats reveal
+            gsap.fromTo('.stat-card',
+                { opacity: 0, y: 20 },
                 {
-                    opacity: 1, x: 0, scale: 1,
-                    duration: 1,
-                    ease: 'power3.out',
-                    scrollTrigger: { trigger: '.about-right-img', start: 'top 82%' },
+                    opacity: 1, y: 0,
+                    duration: 0.7,
+                    stagger: 0.1,
+                    ease: 'power2.out',
+                    scrollTrigger: { trigger: '.stats-grid', start: 'top 85%' },
                 }
             );
 
@@ -70,97 +71,93 @@ const AboutSection = () => {
     }, []);
 
     return (
-        <section ref={sectionRef} id="about" className="parallax-section overflow-hidden">
-            {/* Full-width parallax image strip */}
-            <div className="relative h-[55vh] overflow-hidden">
+        <section ref={sectionRef} id="about" className="overflow-hidden">
+            {/* Parallax Image Banner */}
+            <div
+                className="relative h-[40vh] md:h-[65vh] overflow-hidden"
+            >
                 <img
                     ref={imgRef}
                     src={ABOUT_IMG}
-                    alt="Live comedy performance"
-                    className="parallax-img"
-                    style={{ filter: 'brightness(0.25) saturate(0.5)' }}
+                    alt="Comedy Stage"
+                    className="absolute top-0 left-0 w-full h-[140%] object-cover"
+                    style={{ filter: 'brightness(0.4) saturate(0.7)' }}
                     loading="lazy"
                 />
-                {/* Gradient overlays */}
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,11,8,1) 0%, transparent 20%, transparent 80%, rgba(13,11,8,1) 100%)' }} />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(13,11,8,0.6) 0%, transparent 60%)' }} />
-
-                {/* Centered text on image */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center px-6">
-                        <div className="section-label justify-center mb-4">About Us</div>
-                        <h2
-                            className="font-display"
-                            style={{ fontSize: 'clamp(2.8rem, 7vw, 6.5rem)', color: 'var(--t1)', lineHeight: 0.9 }}
-                        >
-                            LIVE COMEDY<br />
-                            <span style={{ color: 'var(--accent)' }}>ENTERTAINMENT</span>
-                        </h2>
-                    </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-bg via-transparent to-bg opacity-90" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <div className="section-label mb-5 opacity-70">About Us</div>
+                    <h2 className="font-display leading-none" style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', color: 'var(--t1)' }}>
+                        LIVE COMEDY<br />
+                        <span style={{ color: 'var(--accent)' }}>ENTERTAINMENT</span>
+                    </h2>
                 </div>
             </div>
 
-            {/* Content below image */}
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-20">
-                <div className="flex flex-col lg:flex-row gap-16 items-start">
+            {/* Content Section */}
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-20 md:py-32">
+                <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
 
                     {/* Left: Text */}
-                    <div className="about-text flex-1">
-                        <div className="about-label section-label mb-5">Our Story</div>
+                    <div className="about-text flex-1 text-center lg:text-left">
+                        <div className="about-label section-label mb-8 justify-center lg:justify-start items-center gap-4">
+                            <span className="w-10 h-px bg-accent opacity-40 hidden md:block" />
+                            OUR STORY
+                        </div>
                         <h3
-                            className="about-heading font-display mb-6"
-                            style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', color: 'var(--t1)', lineHeight: 1.05 }}
+                            className="about-heading font-display mb-10"
+                            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.2rem)', color: 'var(--t1)', lineHeight: 1.02 }}
                         >
-                            BESIDES THE STAGE, WE'VE DONE IT ALL
+                            BESIDES THE STAGE,<br className="hidden md:block" /> WE'VE DONE IT ALL
                         </h3>
-                        <p className="about-body leading-relaxed mb-4" style={{ color: 'var(--t2)', fontSize: '0.95rem' }}>
-                            Television, movies, YouTube, corporate shows, private gatherings, sangeets, bachelor parties and much more. We have performed for every occasion except a funeral — and we're looking forward to that as well.
-                        </p>
-                        <p className="about-body leading-relaxed mb-8" style={{ color: 'var(--t2)', fontSize: '0.95rem' }}>
-                            Founded in 2024, Cyber Laughs has grown from a 50-seat underground venue to the city's most talked-about comedy destination. Every show is handcrafted, every performer vetted, every punchline earned.
-                        </p>
-                        <button className="about-cta btn-primary">
-                            Learn More
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                        <div className="space-y-8 about-body text-t2 text-lg md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light opacity-80">
+                            <p>
+                                Television, movies, YouTube, corporate shows, private gatherings, sangeets, bachelor parties and much more. We have performed for every occasion except a funeral — and we're looking forward to that as well.
+                            </p>
+                            <p>
+                                Founded in 2024, Cyber Laughs has grown from a 50-seat underground venue to the city's most talked-about comedy destination. Every show is handcrafted, every performer vetted, every punchline earned.
+                            </p>
+                        </div>
+                        <button className="about-cta btn-primary mt-12 px-12 py-5 text-sm tracking-widest uppercase">
+                            Explore More
                         </button>
                     </div>
 
-                    {/* Right: Stats + image */}
-                    <div className="flex-1 flex flex-col gap-8">
-                        {/* Stats grid */}
-                        <div className="grid grid-cols-2 gap-4">
+                    {/* Right: Stats Grid */}
+                    <div className="w-full lg:w-[480px] flex flex-col gap-8 stats-grid">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             {[
                                 { n: 200, suffix: '+', l: 'Shows Performed' },
                                 { n: 50, suffix: 'K+', l: 'Tickets Sold' },
                                 { n: 12, suffix: '+', l: 'Cities Covered' },
-                                { n: 98, suffix: '%', l: 'Audience Satisfaction' },
+                                { n: 98, suffix: '%', l: 'Fan Rating' },
                             ].map(s => (
-                                <div key={s.l} className="surface-card p-5">
+                                <div key={s.l} className="stat-card bg-surface/30 backdrop-blur-md border border-white/5 p-8 md:p-10 rounded-sm hover:border-accent/20 transition-all duration-500">
                                     <div
-                                        className="counter-num font-display text-4xl mb-1"
+                                        className="counter-num font-display text-5xl md:text-6xl mb-3"
                                         style={{ color: 'var(--accent)' }}
                                         data-target={s.n}
                                         data-suffix={s.suffix}
                                     >
                                         0{s.suffix}
                                     </div>
-                                    <div className="font-mono text-xs tracking-widest uppercase" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{s.l}</div>
+                                    <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase opacity-40">{s.l}</div>
                                 </div>
                             ))}
                         </div>
 
-                        {/* Performer image */}
-                        <div className="about-right-img relative rounded overflow-hidden" style={{ height: '260px' }}>
+                        {/* Sub-image */}
+                        <div className="relative rounded-sm overflow-hidden h-56 md:h-72 group shadow-2xl">
                             <img
                                 src={PERFORM_IMG}
-                                alt="Performer on stage"
-                                className="w-full h-full object-cover"
-                                style={{ filter: 'brightness(0.7) saturate(0.6)' }}
-                                loading="lazy"
+                                alt="Performer"
+                                className="w-full h-full object-cover grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
                             />
-                            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,11,8,0.8) 0%, transparent 60%)' }} />
-                            <div className="absolute bottom-4 left-4">
-                                <div className="tag">Featured Performer</div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-bg to-transparent opacity-90" />
+                            <div className="absolute bottom-8 left-8">
+                                <div className="font-mono text-[10px] tracking-[0.3em] uppercase py-2 px-4 border border-accent/20 text-accent bg-accent/5 backdrop-blur-sm">
+                                    Live Atmosphere
+                                </div>
                             </div>
                         </div>
                     </div>

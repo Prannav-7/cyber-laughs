@@ -25,7 +25,7 @@ const SLIDES = [
     },
 ];
 
-const INTERVAL = 4000;
+const INTERVAL = 3000; // Strictly matching Comedy Factory 3s rotation
 
 const HeroSection = () => {
     const heroRef = useRef(null);
@@ -42,8 +42,8 @@ const HeroSection = () => {
         const next = slidesRef.current[idx];
         if (!prev || !next) return;
 
-        gsap.to(prev, { opacity: 0, duration: 1.2, ease: 'power2.inOut' });
-        gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.inOut' });
+        gsap.to(prev, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+        gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.inOut' });
         setCurrent(idx);
         setProgKey(k => k + 1);
     }, [current]);
@@ -55,8 +55,8 @@ const HeroSection = () => {
                 const next = (c + 1) % SLIDES.length;
                 const prev = slidesRef.current[c];
                 const nxt = slidesRef.current[next];
-                if (prev) gsap.to(prev, { opacity: 0, duration: 1.2, ease: 'power2.inOut' });
-                if (nxt) gsap.fromTo(nxt, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.inOut' });
+                if (prev) gsap.to(prev, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+                if (nxt) gsap.fromTo(nxt, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.inOut' });
                 setProgKey(k => k + 1);
                 return next;
             });
@@ -153,15 +153,15 @@ const HeroSection = () => {
             </div>
 
             {/* ── Content ── */}
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-16 pt-28 pb-20 flex flex-col lg:flex-row items-center gap-12">
+            <div className="relative z-10 w-full max-w-5xl mx-auto px-6 lg:px-16 pt-32 pb-24 flex flex-col items-center justify-center min-h-[90vh]">
 
-                {/* Left */}
-                <div className="flex-1 min-w-0">
+                {/* Center Content */}
+                <div className="w-full flex flex-col items-center text-center z-20">
                     {/* Badge */}
-                    <div className="hero-badge inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-sm"
+                    <div className="hero-badge inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-sm"
                         style={{ background: 'rgba(232,184,75,0.12)', border: '1px solid rgba(232,184,75,0.3)' }}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-accent" style={{ background: 'var(--accent)' }} />
-                        <span className="font-mono text-accent text-xs tracking-widest uppercase" style={{ color: 'var(--accent)', fontFamily: 'DM Mono, monospace' }}>
+                        <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                        <span className="font-mono text-accent text-xs md:text-sm tracking-[0.3em] uppercase">
                             Live Every Fri & Sat
                         </span>
                     </div>
@@ -169,58 +169,46 @@ const HeroSection = () => {
                     {/* Title */}
                     <h1
                         ref={titleRef}
-                        className="font-display leading-[0.88] mb-5"
-                        style={{ fontSize: 'clamp(3.8rem, 9.5vw, 9rem)', perspective: '600px' }}
+                        className="font-display leading-[0.82] mb-8"
+                        style={{ perspective: '1200px' }}
                     >
-                        <div className="overflow-hidden">
-                            <span className="hero-title-word inline-block" style={{ color: 'var(--t1)' }}>LAUGHTER</span>
+                        <div className="overflow-hidden py-1">
+                            <span className="hero-title-word inline-block" style={{ color: 'var(--t1)', fontSize: 'clamp(3.5rem, 15vw, 10rem)' }}>LAUGHTER</span>
                         </div>
-                        <div className="overflow-hidden">
-                            <span className="hero-title-word inline-block" style={{ color: 'var(--accent)' }}>IS OUR</span>
+                        <div className="overflow-hidden py-1">
+                            <span className="hero-title-word inline-block" style={{ color: 'var(--accent)', fontSize: 'clamp(3.5rem, 15vw, 10rem)' }}>IS OUR</span>
                         </div>
-                        <div className="overflow-hidden">
-                            <span className="hero-title-word inline-block" style={{ color: 'var(--t1)' }}>BUSINESS</span>
+                        <div className="overflow-hidden py-1">
+                            <span className="hero-title-word inline-block" style={{ color: 'var(--t1)', fontSize: 'clamp(3.5rem, 15vw, 10rem)' }}>BUSINESS</span>
                         </div>
                     </h1>
 
-                    <p className="hero-tagline text-t2 text-base max-w-md mb-8 leading-relaxed font-light" style={{ color: 'var(--t2)' }}>
-                        And we take it seriously. The city's most electric comedy club — live shows, legendary lineups, every single week.
+                    <p className="hero-tagline text-t2 text-base md:text-xl max-w-2xl mb-12 leading-relaxed font-light">
+                        The city's most electric underground comedy club. Live shows, legendary lineups, and punchlines that land every single week.
                     </p>
 
-                    <div className="hero-btns flex flex-wrap gap-3 mb-12">
-                        <button id="hero-domestic" className="btn-primary" onClick={scrollToLineup}>
-                            Domestic Shows
+                    <div className="hero-btns flex flex-wrap justify-center gap-4 mb-16">
+                        <button id="hero-domestic" className="btn-primary px-10 py-4 text-sm uppercase tracking-widest" onClick={scrollToLineup}>
+                            View Lineup
                         </button>
-                        <button id="hero-intl" className="btn-outline" onClick={scrollToLineup}>
-                            International Shows
+                        <button id="hero-intl" className="btn-outline px-10 py-4 text-sm uppercase tracking-widest" onClick={scrollToLineup}>
+                            Book Tickets
                         </button>
                     </div>
 
                     {/* Stats */}
-                    <div className="hero-stats flex gap-10">
+                    <div className="hero-stats flex flex-wrap justify-center gap-x-12 gap-y-6">
                         {[
                             { n: '200+', l: 'Shows' },
                             { n: '50K+', l: 'Tickets Sold' },
                             { n: '4.9★', l: 'Avg Rating' },
                         ].map(s => (
-                            <div key={s.l}>
-                                <div className="font-display text-3xl" style={{ color: 'var(--accent)' }}>{s.n}</div>
-                                <div className="font-mono text-xs tracking-widest uppercase mt-0.5" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{s.l}</div>
+                            <div key={s.l} className="flex flex-col items-center">
+                                <div className="font-display text-3xl md:text-4xl" style={{ color: 'var(--accent)' }}>{s.n}</div>
+                                <div className="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase mt-1 opacity-60">{s.l}</div>
                             </div>
                         ))}
                     </div>
-                </div>
-
-                {/* Right: 3D Mic */}
-                <div
-                    className="hero-mic-wrap flex-shrink-0 relative"
-                    style={{ width: 'clamp(260px, 36vw, 460px)', height: 'clamp(260px, 36vw, 460px)' }}
-                >
-                    <div
-                        className="absolute inset-0 rounded-full"
-                        style={{ background: 'radial-gradient(ellipse at center, rgba(232,184,75,0.07) 0%, transparent 70%)' }}
-                    />
-                    <MicrophoneScene />
                 </div>
             </div>
 

@@ -190,30 +190,30 @@ const LineupSection = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16">
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16 md:py-24">
                 {/* Header */}
-                <div className="lineup-header flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
-                    <h2 className="font-display leading-none" style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)', color: 'var(--t1)' }}>
+                <div className="lineup-header flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 md:mb-16 text-center md:text-left">
+                    <h2 className="font-display leading-none" style={{ fontSize: 'clamp(3rem, 10vw, 6.5rem)', color: 'var(--t1)' }}>
                         THE LINEUP
                     </h2>
-                    <p className="text-sm max-w-xs leading-relaxed" style={{ color: 'var(--t2)' }}>
+                    <p className="text-sm md:text-base max-w-sm md:max-w-xs leading-relaxed opacity-70 mx-auto md:mx-0">
                         Six nights of handpicked comedy. Each performer vetted for maximum impact.
                     </p>
                 </div>
 
-                <div className="divider mb-12" style={{ background: 'var(--border)' }} />
+                <div className="divider mb-12 md:mb-16 opacity-10" />
 
                 {/* Grid */}
-                <div className="lineup-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="lineup-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8">
                     {comedians.map((c, i) => <ComedianCard key={c.id} comedian={c} index={i} />)}
                 </div>
 
                 {/* Footer */}
-                <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="font-mono text-xs tracking-widest uppercase" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
+                <div className="mt-16 md:mt-20 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-white/5 pt-10">
+                    <p className="font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase opacity-50">
                         More shows announced weekly
                     </p>
-                    <button id="lineup-notify" className="btn-outline">Get Notified</button>
+                    <button id="lineup-notify" className="btn-outline px-8 py-3 text-xs">Stay Updated</button>
                 </div>
             </div>
         </section>
