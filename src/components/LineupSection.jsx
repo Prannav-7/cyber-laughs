@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 import ALEX_IMG from '../assets/images/Alex Volt.jpg';
 import MAYA_IMG from '../assets/images/Maya Glitch.png';
 import ZOE_IMG from '../assets/images/Zoe Static.jpg';
@@ -38,7 +39,7 @@ const comedians = [
         time: '10:00 PM',
         price: '$40',
         img: ZOE_IMG,
-        bio: 'Exists in a dimension where logic is optional. Sets you\'ll quote for weeks.',
+        bio: "Exists in a dimension where logic is optional. Sets you'll quote for weeks.",
     },
     {
         id: 4,
@@ -62,163 +63,188 @@ const comedians = [
     },
 ];
 
-// Parallax image banner between sections
-const BANNER_IMG = 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1600&q=85&auto=format&fit=crop';
-
-const ComedianCard = ({ comedian, index }) => {
-    const cardRef = useRef(null);
+// ── Single comedian row ──
+const ComedianRow = ({ comedian, index }) => {
+    const rowRef = useRef(null);
+    const imgWrapRef = useRef(null);
+    const contentRef = useRef(null);
 
     useEffect(() => {
-        const card = cardRef.current;
-        if (!card) return;
+        const row = rowRef.current;
+        const imgWrap = imgWrapRef.current;
+        const content = contentRef.current;
+        if (!row || !imgWrap || !content) return;
 
-        // Magnetic pull
-        const onMove = (e) => {
-            const rect = card.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            const dx = e.clientX - cx;
-            const dy = e.clientY - cy;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 200) {
-                const f = (200 - dist) / 200;
-                gsap.to(card, { x: dx * f * 0.1, y: dy * f * 0.1, duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
+        // Image slides in from left, content from right
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: row,
+                start: 'top 78%',
+                end: 'top 40%',
+                toggleActions: 'play none none reverse',
             }
-        };
-        const onLeave = () => gsap.to(card, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.6)', overwrite: 'auto' });
+        });
 
-        window.addEventListener('mousemove', onMove);
-        card.addEventListener('mouseleave', onLeave);
-        return () => { window.removeEventListener('mousemove', onMove); card.removeEventListener('mouseleave', onLeave); };
+        tl.fromTo(imgWrap,
+            { opacity: 0, x: -80, scale: 0.94 },
+            { opacity: 1, x: 0, scale: 1, duration: 1, ease: 'power3.out' }
+        ).fromTo(content.querySelectorAll('.reveal-item'),
+            { opacity: 0, x: 60 },
+            { opacity: 1, x: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' },
+            '-=0.6'
+        );
+
+        return () => {
+            tl.kill();
+            ScrollTrigger.getAll().forEach(st => {
+                if (st.vars.trigger === row) st.kill();
+            });
+        };
     }, []);
 
-    return (
-        <div ref={cardRef} className="comedian-card" style={{ aspectRatio: '3/4' }}>
-            <img src={comedian.img} alt={comedian.name} loading="lazy" />
-            <div className="comedian-card-overlay" />
+    const isEven = index % 2 === 0;
 
-            {/* Content */}
-            <div className="absolute inset-0 flex flex-col justify-end p-5 z-10">
-                <div className="tag mb-2">{comedian.specialty}</div>
-                <h3 className="font-display text-2xl tracking-wide leading-none mb-1" style={{ color: 'var(--t1)' }}>
+    return (
+        <div
+            ref={rowRef}
+            className="comedian-row grid grid-cols-1 md:grid-cols-2 gap-0 min-h-[85vh] border-b border-white/5"
+        >
+            {/* ── Image side ── */}
+            <div
+                ref={imgWrapRef}
+                className={`relative overflow-hidden opacity-0 ${isEven ? 'md:order-1' : 'md:order-2'}`}
+                style={{ minHeight: '60vmin' }}
+            >
+                <img
+                    src={comedian.img}
+                    alt={comedian.name}
+                    className="absolute inset-0 w-full h-full object-cover object-top"
+                    style={{ filter: 'brightness(0.75) saturate(0.9)' }}
+                    loading="lazy"
+                />
+                {/* Gradient overlay */}
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: isEven
+                            ? 'linear-gradient(to right, transparent 60%, rgba(13,11,8,1) 100%)'
+                            : 'linear-gradient(to left, transparent 60%, rgba(13,11,8,1) 100%)'
+                    }}
+                />
+                {/* Index number watermark */}
+                <div
+                    className="absolute bottom-6 left-6 font-display opacity-10 select-none"
+                    style={{ fontSize: 'clamp(5rem, 15vw, 12rem)', color: 'var(--accent)', lineHeight: 1 }}
+                >
+                    {String(index + 1).padStart(2, '0')}
+                </div>
+            </div>
+
+            {/* ── Content side ── */}
+            <div
+                ref={contentRef}
+                className={`flex flex-col justify-center px-10 md:px-16 lg:px-20 py-16 bg-[#0d0b08] ${isEven ? 'md:order-2' : 'md:order-1'}`}
+            >
+                <div className="reveal-item section-label mb-6">{comedian.specialty}</div>
+
+                <h3
+                    className="reveal-item font-display leading-none mb-6"
+                    style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', color: 'var(--t1)', textTransform: 'uppercase' }}
+                >
                     {comedian.name}
                 </h3>
-                <p className="text-xs leading-relaxed mb-3 line-clamp-2" style={{ color: 'var(--t2)' }}>
+
+                <p className="reveal-item text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-md">
                     {comedian.bio}
                 </p>
-                <div className="flex items-center justify-between">
+
+                {/* Date / Time / Price row */}
+                <div className="reveal-item flex flex-wrap items-center gap-8 mb-10 border-t border-white/10 pt-8">
                     <div>
-                        <div className="font-mono text-xs" style={{ color: 'var(--accent)', fontFamily: 'DM Mono, monospace' }}>{comedian.date}</div>
-                        <div className="font-mono text-xs" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>{comedian.time}</div>
+                        <div className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40 mb-1">Date</div>
+                        <div className="font-mono text-sm" style={{ color: 'var(--accent)' }}>{comedian.date}</div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="font-display text-xl" style={{ color: 'var(--accent)' }}>{comedian.price}</span>
-                        <button className="btn-primary" style={{ padding: '7px 14px', fontSize: '0.62rem' }}>Book</button>
+                    <div>
+                        <div className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40 mb-1">Time</div>
+                        <div className="font-mono text-sm text-white/70">{comedian.time}</div>
                     </div>
+                    <div>
+                        <div className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40 mb-1">From</div>
+                        <div className="font-display text-2xl" style={{ color: 'var(--accent)' }}>{comedian.price}</div>
+                    </div>
+                </div>
+
+                <div className="reveal-item">
+                    <button
+                        className="btn-primary px-12 py-5 text-[10px] uppercase tracking-[0.35em] font-bold"
+                    >
+                        Book Tickets
+                    </button>
                 </div>
             </div>
         </div>
     );
 };
 
+// ── Section ──
 const LineupSection = () => {
     const sectionRef = useRef(null);
-    const bannerRef = useRef(null);
-    const bannerImgRef = useRef(null);
+    const headerRef = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Header
-            gsap.fromTo('.lineup-header > *',
-                { opacity: 0, y: 32 },
-                {
-                    opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out',
-                    scrollTrigger: { trigger: '.lineup-header', start: 'top 82%' },
-                }
-            );
-
-            // Cards stagger
-            gsap.fromTo('.comedian-card',
-                { opacity: 0, y: 48 },
+            // Header reveal
+            gsap.fromTo(headerRef.current.querySelectorAll('.header-item'),
+                { opacity: 0, y: 40 },
                 {
                     opacity: 1, y: 0,
-                    duration: 0.75,
-                    stagger: { amount: 0.7, from: 'start' },
-                    ease: 'power3.out',
-                    scrollTrigger: { trigger: '.lineup-grid', start: 'top 80%' },
+                    duration: 0.9, stagger: 0.12, ease: 'power3.out',
+                    scrollTrigger: { trigger: headerRef.current, start: 'top 80%' },
                 }
             );
-
-            // Banner parallax
-            if (bannerImgRef.current) {
-                gsap.to(bannerImgRef.current, {
-                    yPercent: 20,
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: bannerRef.current,
-                        start: 'top bottom',
-                        end: 'bottom top',
-                        scrub: 1.5,
-                    },
-                });
-            }
         }, sectionRef);
 
         return () => ctx.revert();
     }, []);
 
     return (
-        <section ref={sectionRef} id="lineup">
-            {/* Parallax banner */}
-            <div ref={bannerRef} className="relative h-48 overflow-hidden">
-                <img
-                    ref={bannerImgRef}
-                    src={BANNER_IMG}
-                    alt="Comedy stage"
-                    className="parallax-img"
-                    style={{ filter: 'brightness(0.2) saturate(0.4)' }}
-                    loading="lazy"
-                />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,11,8,1) 0%, transparent 30%, transparent 70%, rgba(13,11,8,1) 100%)' }} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="section-label">March 2025 Lineup</div>
-                </div>
+        <section ref={sectionRef} id="lineup" className="bg-[#0d0b08]">
+
+            {/* ── Section Header ── */}
+            <div
+                ref={headerRef}
+                className="max-w-7xl mx-auto px-6 lg:px-16 pt-28 pb-20 flex flex-col items-center text-center"
+            >
+                <div className="header-item section-label mb-6 opacity-0">Our Entertainers</div>
+                <h2
+                    className="header-item font-display leading-none mb-6 opacity-0"
+                    style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)', color: 'var(--t1)', textTransform: 'uppercase' }}
+                >
+                    THE LINEUP
+                </h2>
+                <p className="header-item text-white/50 text-sm md:text-lg max-w-xl leading-relaxed italic mb-8 opacity-0">
+                    "Six nights of handpicked comedy. Each performer vetted for maximum impact and unfiltered energy."
+                </p>
+                <div className="header-item w-16 h-px opacity-0" style={{ background: 'var(--accent)' }} />
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 py-16 md:py-24">
-                {/* Header */}
-                <div className="lineup-header flex flex-col items-center text-center gap-6 mb-16 md:mb-28 px-4">
-                    <div className="section-label mb-2">Our Entertainers</div>
-                    <h2 className="font-display leading-tight" style={{ fontSize: 'clamp(2.5rem, 9vw, 6.8rem)', color: 'var(--t1)' }}>
-                        THE LINEUP
-                    </h2>
-                    <p className="text-sm md:text-lg max-w-xl leading-relaxed opacity-60 italic mb-4">
-                        "Six nights of handpicked comedy. Each performer vetted for maximum impact and unfiltered energy."
-                    </p>
-                    <div className="w-12 h-px bg-accent/40" />
-                </div>
-
-                {/* Grid */}
-                <div className="lineup-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-6xl mx-auto">
-                    {comedians.map((c, i) => (
-                        <div key={c.id} className="flex justify-center w-full">
-                            <div className="w-full max-w-[360px] group transition-transform duration-500 hover:-translate-y-2">
-                                <ComedianCard comedian={c} index={i} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Footer */}
-                <div className="mt-16 md:mt-24 flex flex-col items-center text-center gap-8 border-t border-white/5 pt-12">
-                    <p className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase opacity-40">
-                        * MORE SHOWS ANNOUNCED WEEKLY *
-                    </p>
-                    <button id="lineup-notify" className="btn-outline px-12 py-4 text-xs uppercase tracking-widest">
-                        Stay Updated
-                    </button>
-                </div>
+            {/* ── Comedian Rows ── */}
+            <div className="border-t border-white/5">
+                {comedians.map((c, i) => (
+                    <ComedianRow key={c.id} comedian={c} index={i} />
+                ))}
             </div>
+
+            {/* ── Footer CTA ── */}
+            <div className="py-24 flex flex-col items-center text-center gap-6 border-t border-white/5">
+                <p className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-30">
+                    * More shows announced weekly *
+                </p>
+                <button id="lineup-notify" className="btn-outline px-14 py-5 text-xs uppercase tracking-widest">
+                    Stay Updated
+                </button>
+            </div>
+
         </section>
     );
 };

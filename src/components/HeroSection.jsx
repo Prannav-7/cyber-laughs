@@ -67,34 +67,39 @@ const HeroSection = () => {
     useEffect(() => {
         const ctx = gsap.context(() => {
             const tl = gsap.timeline({ delay: 0.3 });
-            tl.fromTo('.hero-badge',
-                { opacity: 0, y: -12 },
-                { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+
+            // Animate the badge box (first child of the center content div)
+            tl.fromTo('[data-hero-badge]',
+                { opacity: 0, y: -16 },
+                { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }
             )
-                .fromTo('.hero-title-word',
-                    { opacity: 0, y: 60, skewY: 3 },
-                    { opacity: 1, y: 0, skewY: 0, duration: 1, stagger: 0.1, ease: 'power4.out' },
-                    '-=0.2'
+                // Buttons
+                .fromTo('.hero-btns > *',
+                    { opacity: 0, y: 20 },
+                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
+                    '-=0.3'
                 )
+                // Title (whole h1)
+                .fromTo('[data-hero-title]',
+                    { opacity: 0, y: 50 },
+                    { opacity: 1, y: 0, duration: 1, ease: 'power4.out' },
+                    '-=0.3'
+                )
+                // Tagline
                 .fromTo('.hero-tagline',
                     { opacity: 0, y: 20 },
                     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
                     '-=0.5'
                 )
-                .fromTo('.hero-btns > *',
-                    { opacity: 0, y: 16 },
-                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
-                    '-=0.4'
-                )
+                // Stats
                 .fromTo('.hero-stats > *',
                     { opacity: 0, y: 12 },
                     { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
-                    '-=0.3'
-                )
+                    '-=0.4'
+                );
 
-            // Kinetic scroll: title words expand + fade
-            const words = titleRef.current?.querySelectorAll('.hero-title-word');
-            if (words?.length) {
+            // Kinetic scroll: title fades + scales as you scroll away
+            if (titleRef.current) {
                 ScrollTrigger.create({
                     trigger: heroRef.current,
                     start: 'top top',
@@ -102,15 +107,13 @@ const HeroSection = () => {
                     scrub: 2,
                     onUpdate(self) {
                         const p = self.progress;
-                        words.forEach((w, i) => {
-                            w.style.transform = `translateY(${p * -30}px) scale(${1 + p * (0.12 + i * 0.04)})`;
-                            w.style.opacity = String(Math.max(0, 1 - p * 0.8));
-                        });
+                        titleRef.current.style.transform = `translateY(${p * -40}px) scale(${1 + p * 0.08})`;
+                        titleRef.current.style.opacity = String(Math.max(0, 1 - p * 0.9));
                     },
                 });
             }
 
-            // Scroll indicator
+            // Scroll indicator bounce
             gsap.to('.scroll-ind', { y: 8, duration: 1.3, ease: 'sine.inOut', yoyo: true, repeat: -1 });
         }, heroRef);
 
@@ -153,7 +156,7 @@ const HeroSection = () => {
                 <div className="w-full flex flex-col items-center text-center z-20">
 
                     {/* Specialized Badge - More Compact */}
-                    <div className="mb-10 p-6 md:p-10 bg-[#1a1712]/85 backdrop-blur-md border border-white/5 rounded-sm max-w-lg">
+                    <div data-hero-badge className="mb-10 p-6 md:p-10 bg-[#1a1712]/85 backdrop-blur-md border border-white/5 rounded-sm max-w-lg">
                         <div className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/40 mb-2">At Cyber Laughs</div>
                         <h2 className="font-display text-xl md:text-3xl leading-tight" style={{ color: 'var(--accent)' }}>
                             We specialize in <span className="text-white">Insanity!</span>
@@ -172,14 +175,15 @@ const HeroSection = () => {
                     {/* Bold Title - Reference Style */}
                     <h1
                         ref={titleRef}
+                        data-hero-title
                         className="font-display leading-none mb-6"
                         style={{ color: 'var(--t1)', fontSize: 'clamp(2.5rem, 8vw, 6.2rem)', textTransform: 'uppercase' }}
                     >
-                        Live Comedy Entertainment
+                        UNFILTERED COMEDY NIGHTS
                     </h1>
 
                     <p className="hero-tagline text-t2 text-[10px] md:text-base max-w-4xl leading-relaxed font-bold tracking-widest uppercase opacity-70 mb-12">
-                        "BESIDES STAGE WE HAVE DONE TELEVISION, MOVIES, YOUTUBE, CORPORATE SHOWS, PRIVATE GATHERINGS, SANGEETS, BACHELOR PARTIES & MUCH MORE."
+                        "THE RAW ENERGY OF THE UNDERGROUND. NO SCRIPTS, NO LIMITS—JUST PURE, CHAOTIC HILARITY."
                     </p>
 
                     {/* Stats */}

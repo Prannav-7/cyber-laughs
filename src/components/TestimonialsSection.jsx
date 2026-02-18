@@ -110,7 +110,7 @@ const TestimonialsSection = () => {
                     </p>
                 </div>
 
-                <div className="w-16 h-px bg-white/10 mx-auto mb-16 md:mb-24" />
+                <div className="w-16 h-px bg-white/10 mx-auto my-16 md:my-24" />
 
                 <div className="testimonials-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                     {testimonials.map((t, i) => (
