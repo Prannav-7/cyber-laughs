@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import TextGenerateEffect from './TextGenerateEffect';
+import { TextRevealCard, TextRevealCardDescription } from './TextRevealCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// High-quality comedy/stage Unsplash images for slideshow
 const SLIDES = [
     {
         img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920&q=85&auto=format&fit=crop',
@@ -24,25 +25,29 @@ const SLIDES = [
     },
 ];
 
-const INTERVAL = 3000; // Strictly matching Comedy Factory 3s rotation
+const INTERVAL = 4000;
+
+const STATS = [
+    { n: '250+', l: 'Shows A Year' },
+    { n: '120K+', l: 'Happy Guests' },
+    { n: '4.9★', l: 'Global Rating' },
+];
 
 const HeroSection = () => {
     const heroRef = useRef(null);
     const titleRef = useRef(null);
     const slidesRef = useRef([]);
     const timerRef = useRef(null);
-    const progressRef = useRef(null);
     const [current, setCurrent] = useState(0);
     const [progKey, setProgKey] = useState(0);
 
-    // Crossfade to next slide
+    // Crossfade
     const goTo = useCallback((idx) => {
         const prev = slidesRef.current[current];
         const next = slidesRef.current[idx];
         if (!prev || !next) return;
-
-        gsap.to(prev, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
-        gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.inOut' });
+        gsap.to(prev, { opacity: 0, duration: 1, ease: 'power2.inOut' });
+        gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'power2.inOut' });
         setCurrent(idx);
         setProgKey(k => k + 1);
     }, [current]);
@@ -54,8 +59,8 @@ const HeroSection = () => {
                 const next = (c + 1) % SLIDES.length;
                 const prev = slidesRef.current[c];
                 const nxt = slidesRef.current[next];
-                if (prev) gsap.to(prev, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
-                if (nxt) gsap.fromTo(nxt, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.inOut' });
+                if (prev) gsap.to(prev, { opacity: 0, duration: 1, ease: 'power2.inOut' });
+                if (nxt) gsap.fromTo(nxt, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'power2.inOut' });
                 setProgKey(k => k + 1);
                 return next;
             });
@@ -66,39 +71,40 @@ const HeroSection = () => {
     // Entrance animations
     useEffect(() => {
         const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ delay: 0.3 });
+            const tl = gsap.timeline({ delay: 0.4 });
 
-            // Animate the badge box (first child of the center content div)
-            tl.fromTo('[data-hero-badge]',
-                { opacity: 0, y: -16 },
-                { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }
+            // 1. Label line slides in from left
+            tl.fromTo('.hero-label',
+                { opacity: 0, x: -30 },
+                { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }
             )
-                // Buttons
+                // 2. Title drops in
+                .fromTo(titleRef.current,
+                    { opacity: 0, y: 60 },
+                    { opacity: 1, y: 0, duration: 1.1, ease: 'power4.out' },
+                    '-=0.2'
+                )
+                // 3. Divider line expands
+                .fromTo('.hero-divider',
+                    { scaleX: 0, transformOrigin: 'left' },
+                    { scaleX: 1, duration: 0.6, ease: 'power2.out' },
+                    '-=0.2'
+                )
+                // 4. Buttons pop in
                 .fromTo('.hero-btns > *',
-                    { opacity: 0, y: 20 },
+                    { opacity: 0, y: 16 },
+                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' },
+                    '-=0.2'
+                )
+                // 5. Stats stagger in
+                .fromTo('.hero-stat',
+                    { opacity: 0, y: 12 },
                     { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
                     '-=0.3'
-                )
-                // Title (whole h1)
-                .fromTo('[data-hero-title]',
-                    { opacity: 0, y: 50 },
-                    { opacity: 1, y: 0, duration: 1, ease: 'power4.out' },
-                    '-=0.3'
-                )
-                // Tagline
-                .fromTo('.hero-tagline',
-                    { opacity: 0, y: 20 },
-                    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
-                    '-=0.5'
-                )
-                // Stats
-                .fromTo('.hero-stats > *',
-                    { opacity: 0, y: 12 },
-                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
-                    '-=0.4'
                 );
+            // NOTE: TextGenerateEffect owns the tagline animation — do not animate .hero-tagline here
 
-            // Kinetic scroll: title fades + scales as you scroll away
+            // Kinetic scroll: title drifts up as you scroll
             if (titleRef.current) {
                 ScrollTrigger.create({
                     trigger: heroRef.current,
@@ -107,14 +113,14 @@ const HeroSection = () => {
                     scrub: 2,
                     onUpdate(self) {
                         const p = self.progress;
-                        titleRef.current.style.transform = `translateY(${p * -40}px) scale(${1 + p * 0.08})`;
-                        titleRef.current.style.opacity = String(Math.max(0, 1 - p * 0.9));
+                        titleRef.current.style.transform = `translateY(${p * -50}px)`;
+                        titleRef.current.style.opacity = String(Math.max(0, 1 - p * 1.2));
                     },
                 });
             }
 
             // Scroll indicator bounce
-            gsap.to('.scroll-ind', { y: 8, duration: 1.3, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+            gsap.to('.scroll-ind', { y: 8, duration: 1.4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
         }, heroRef);
 
         return () => ctx.revert();
@@ -123,9 +129,9 @@ const HeroSection = () => {
     const scrollToLineup = () => document.getElementById('lineup')?.scrollIntoView({ behavior: 'smooth' });
 
     return (
-        <section ref={heroRef} id="hero" className="relative min-h-screen flex items-center overflow-hidden">
+        <section ref={heroRef} id="hero" className="relative min-h-screen flex items-end overflow-hidden">
 
-            {/* ── Slideshow ── */}
+            {/* ── Slideshow background ── */}
             <div className="absolute inset-0 z-0">
                 {SLIDES.map((s, i) => (
                     <div
@@ -137,75 +143,110 @@ const HeroSection = () => {
                         <img src={s.img} alt={s.label} />
                     </div>
                 ))}
-                {/* Warm amber tint overlay */}
-                <div
-                    className="absolute inset-0"
-                    style={{ background: 'linear-gradient(to bottom, rgba(13,11,8,0.15) 0%, rgba(13,11,8,0.1) 40%, rgba(13,11,8,0.75) 75%, rgba(13,11,8,1) 100%)' }}
-                />
-                {/* Left vignette for text readability */}
-                <div
-                    className="absolute inset-0"
-                    style={{ background: 'linear-gradient(to right, rgba(13,11,8,0.85) 0%, rgba(13,11,8,0.4) 55%, transparent 100%)' }}
-                />
+
+                {/* Bottom-heavy dark gradient so text is readable */}
+                <div className="absolute inset-0" style={{
+                    background: 'linear-gradient(to bottom, rgba(13,11,8,0.2) 0%, rgba(13,11,8,0.3) 40%, rgba(13,11,8,0.85) 70%, rgba(13,11,8,1) 100%)'
+                }} />
+                {/* Left vignette */}
+                <div className="absolute inset-0" style={{
+                    background: 'linear-gradient(to right, rgba(13,11,8,0.9) 0%, rgba(13,11,8,0.5) 50%, transparent 100%)'
+                }} />
             </div>
 
-            {/* ── Content ── */}
-            <div className="relative z-10 w-full max-w-5xl mx-auto px-6 lg:px-16 pt-20 pb-12 flex flex-col items-center justify-center min-h-[85vh]">
+            {/* ── Main content — left-aligned, bottom-anchored ── */}
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-16 pb-28 pt-36">
+                <div className="max-w-3xl">
 
-                {/* Center Content */}
-                <div className="w-full flex flex-col items-center text-center z-20">
-
-                    {/* Specialized Badge - More Compact */}
-                    <div data-hero-badge className="mb-10 p-6 md:p-10 bg-[#1a1712]/85 backdrop-blur-md border border-white/5 rounded-sm max-w-lg">
-                        <div className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/40 mb-2">At Cyber Laughs</div>
-                        <h2 className="font-display text-xl md:text-3xl leading-tight" style={{ color: 'var(--accent)' }}>
-                            We specialize in <span className="text-white">Insanity!</span>
-                        </h2>
+                    {/* Label */}
+                    <div className="hero-label flex items-center gap-4 mb-8">
+                        <div className="w-8 h-px" style={{ background: 'var(--accent)' }} />
+                        <span className="font-mono text-[10px] tracking-[0.4em] uppercase" style={{ color: 'var(--accent)' }}>
+                            Cyber Laughs · Est. 2018
+                        </span>
                     </div>
 
-                    <div className="hero-btns flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
-                        <button id="hero-domestic" className="btn-primary px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold" onClick={scrollToLineup}>
+                    {/* Main title — TextRevealCard: hover to reveal in gold */}
+                    <h1
+                        ref={titleRef}
+                        className="mb-8"
+                        style={{ lineHeight: 0.92 }}
+                    >
+                        <TextRevealCard
+                            text={`UNFILTERED
+COMEDY
+NIGHTS`}
+                            revealText={`UNFILTERED
+COMEDY
+NIGHTS`}
+                        >
+                            <TextRevealCardDescription>
+                                Hover to feel the energy
+                            </TextRevealCardDescription>
+                        </TextRevealCard>
+                    </h1>
+
+                    {/* Tagline with TextGenerateEffect */}
+                    <p className="hero-tagline mb-10 max-w-xl">
+                        <TextGenerateEffect
+                            words="The raw energy of the underground. No scripts, no limits — just pure, chaotic hilarity."
+                            duration={0.9}
+                            filter={true}
+                            stagger={0.15}
+                            delay={1.2}
+                            heroMode={true}
+                            className="text-white/60 text-sm md:text-base leading-relaxed"
+                        />
+                    </p>
+
+                    {/* Divider */}
+                    <div className="hero-divider w-full h-px mb-10" style={{ background: 'rgba(255,255,255,0.08)' }} />
+
+                    {/* CTA Buttons */}
+                    <div className="hero-btns flex flex-wrap gap-4 mb-16">
+                        <button
+                            id="hero-domestic"
+                            className="btn-primary px-10 py-4 text-[10px] uppercase tracking-[0.3em] font-bold"
+                            onClick={scrollToLineup}
+                        >
                             Domestic Shows
                         </button>
-                        <button id="hero-intl" className="btn-primary px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold bg-[#e8b84b] hover:bg-[#d4a33a]" onClick={scrollToLineup}>
+                        <button
+                            id="hero-intl"
+                            className="btn-outline px-10 py-4 text-[10px] uppercase tracking-[0.3em] font-bold"
+                            onClick={scrollToLineup}
+                        >
                             International Shows
                         </button>
                     </div>
 
-                    {/* Bold Title - Reference Style */}
-                    <h1
-                        ref={titleRef}
-                        data-hero-title
-                        className="font-display leading-none mb-6"
-                        style={{ color: 'var(--t1)', fontSize: 'clamp(2.5rem, 8vw, 6.2rem)', textTransform: 'uppercase' }}
-                    >
-                        UNFILTERED COMEDY NIGHTS
-                    </h1>
-
-                    <p className="hero-tagline text-t2 text-[10px] md:text-base max-w-4xl leading-relaxed font-bold tracking-widest uppercase opacity-70 mb-12">
-                        "THE RAW ENERGY OF THE UNDERGROUND. NO SCRIPTS, NO LIMITS—JUST PURE, CHAOTIC HILARITY."
-                    </p>
-
-                    {/* Stats */}
-                    <div className="hero-stats flex flex-wrap justify-center gap-x-20 gap-y-8 border-t border-white/5 pt-12">
-                        {[
-                            { n: '250+', l: 'Shows A Year' },
-                            { n: '120K+', l: 'Happy Guests' },
-                            { n: '4.9★', l: 'Global Rating' },
-                        ].map(s => (
-                            <div key={s.l} className="flex flex-col items-center group">
-                                <div className="font-display text-4xl md:text-5xl transition-all duration-500 group-hover:text-white" style={{ color: 'var(--accent)' }}>{s.n}</div>
-                                <div className="font-mono text-[9px] md:text-xs tracking-[0.3em] uppercase mt-2 opacity-30 group-hover:opacity-60 transition-opacity">{s.l}</div>
+                    {/* Stats row */}
+                    <div className="flex flex-wrap gap-x-12 gap-y-6">
+                        {STATS.map((s, i) => (
+                            <div key={i} className="hero-stat flex flex-col" style={{ opacity: 0 }}>
+                                <span
+                                    className="font-display text-3xl md:text-4xl leading-none"
+                                    style={{ color: 'var(--accent)' }}
+                                >
+                                    {s.n}
+                                </span>
+                                <span className="font-mono text-[9px] tracking-[0.3em] uppercase mt-1 opacity-40">
+                                    {s.l}
+                                </span>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* ── Slide controls ── */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4">
+            {/* ── Slide controls — bottom right ── */}
+            <div className="absolute bottom-10 right-10 z-20 flex flex-col items-end gap-3">
+                {/* Slide label */}
+                <div className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">
+                    {SLIDES[current].label}
+                </div>
                 {/* Progress bar */}
-                <div className="w-48 h-px" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                <div className="w-32 h-px" style={{ background: 'rgba(255,255,255,0.1)' }}>
                     <div key={progKey} className="slide-progress-bar" />
                 </div>
                 {/* Dots */}
@@ -218,17 +259,19 @@ const HeroSection = () => {
                         />
                     ))}
                 </div>
-                {/* Slide label */}
-                <div className="font-mono text-xs tracking-widest uppercase" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>
-                    {SLIDES[current].label}
-                </div>
             </div>
 
-            {/* Scroll indicator */}
-            <div className="scroll-ind absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 opacity-40 hidden lg:flex">
-                <div className="w-px h-12 bg-gradient-to-b" style={{ background: 'linear-gradient(to bottom, var(--accent), transparent)' }} />
-                <span className="font-mono text-xs tracking-[0.3em] rotate-90 origin-center mt-2" style={{ color: 'var(--t3)', fontFamily: 'DM Mono, monospace' }}>Scroll</span>
+            {/* ── Scroll indicator — right side ── */}
+            <div className="scroll-ind absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 opacity-30 hidden lg:flex">
+                <div className="w-px h-14" style={{ background: 'linear-gradient(to bottom, var(--accent), transparent)' }} />
+                <span
+                    className="font-mono text-[9px] tracking-[0.35em] uppercase mt-2"
+                    style={{ writingMode: 'vertical-rl', color: 'var(--t3)' }}
+                >
+                    Scroll
+                </span>
             </div>
+
         </section>
     );
 };

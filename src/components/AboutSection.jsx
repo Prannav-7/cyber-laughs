@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import TextGenerateEffect from './TextGenerateEffect';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -165,10 +166,15 @@ const AboutSection = () => {
                         ))}
                     </h2>
 
-                    <p className="about-body text-white/80 text-sm md:text-lg max-w-3xl leading-relaxed tracking-wide mb-12 opacity-0">
-                        Besides stage we have done Television, Movies, YouTube, Corporate Shows, Private Gatherings,
-                        Sangeets, Bachelor Parties &amp; much more. We have performed for every occasion except for a
-                        funeral — and we're looking forward to that as well.
+                    <p className="about-body text-white/80 text-sm md:text-lg max-w-3xl leading-relaxed tracking-wide mb-12">
+                        <TextGenerateEffect
+                            words="Besides stage we have done Television, Movies, YouTube, Corporate Shows, Private Gatherings, Sangeets, Bachelor Parties and much more. We have performed for every occasion except for a funeral — and we're looking forward to that as well."
+                            duration={0.85}
+                            filter={true}
+                            stagger={0.13}
+                            triggerStart="top 85%"
+                            wordClass="text-white/80"
+                        />
                     </p>
 
                     <button className="about-cta btn-primary px-12 py-5 text-[10px] uppercase tracking-[0.35em] font-bold opacity-0">

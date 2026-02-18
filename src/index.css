@@ -289,6 +289,31 @@ body {
   line-height: 0.85;
 }
 
+/* ── TextRevealCard ── */
+.text-reveal-card {
+  display: inline-block;
+}
+
+.text-reveal-card__header {
+  margin-bottom: 0.5rem;
+}
+
+.text-reveal-card__desc {
+  animation: pulse-hint 3s ease-in-out infinite;
+}
+
+@keyframes pulse-hint {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
 /* ── Comedian card ── */
 .comedian-card {
   position: relative;
